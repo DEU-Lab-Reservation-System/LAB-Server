@@ -1,6 +1,5 @@
 package lab.reservation_server.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,10 +28,10 @@ public class Lab {
      * 실습실에 열리는 강의 목록
      */
     @OneToMany(mappedBy = "lab", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Lecture> lectures = new ArrayList<>();
+    private List<Lecture> lectures;
 
     /**
-     * 살숩실 호수 (방번호 )
+     * 실습실 호수 (방번호)
      */
     @Column(unique = true, nullable = false)
     private String number;

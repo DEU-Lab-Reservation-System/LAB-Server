@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +14,7 @@ import javax.persistence.OneToOne;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 
 @Entity
@@ -28,11 +30,11 @@ public class Reservation extends BaseTime {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false, unique = true)
+    @JoinColumn(name = "member_id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "fk_reservation_member"))
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "lab_id")
+    @JoinColumn(name = "lab_id" , nullable = false, foreignKey = @ForeignKey(name = "fk_reservation_lab"))
     private Lab lab;
 
     /**
@@ -48,7 +50,7 @@ public class Reservation extends BaseTime {
     private LocalDateTime startTime;
 
     /**
-     * 이용 종료 시간
+     * 이용 종료 시간(만료시간)
      */
     @Column(nullable = false)
     private LocalDateTime endTime;
@@ -60,7 +62,7 @@ public class Reservation extends BaseTime {
     private LocalDateTime extensionTime;
 
     /**
-     * 예약 승인 여부
+     * 예약 승인 여부(조교로부터)
      */
     @Column(nullable = false)
     private Boolean permission;

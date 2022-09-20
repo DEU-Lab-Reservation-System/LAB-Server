@@ -1,7 +1,6 @@
 package lab.reservation_server.domain;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;

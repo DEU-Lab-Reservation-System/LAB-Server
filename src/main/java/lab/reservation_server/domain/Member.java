@@ -1,5 +1,6 @@
 package lab.reservation_server.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -30,14 +31,14 @@ public class Member extends BaseTime {
     /**
      * 학생이 예약한 내역
      */
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY , cascade = CascadeType.REMOVE)
     private Reservation reservation;
 
     /**
      * 학생의 학번
      */
     @Column(unique = true, nullable = false, length = 10)
-    private String username;
+    private String userId;
 
     /**
      * 학생의 비밀번호
@@ -70,8 +71,8 @@ public class Member extends BaseTime {
     private Role role;
 
     @Builder
-    public Member(String username, String password, String name, String email, String phoneNum, Role role) {
-        this.username = username;
+    public Member(String userId, String password, String name, String email, String phoneNum, Role role) {
+        this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;

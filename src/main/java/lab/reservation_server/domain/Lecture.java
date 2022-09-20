@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,7 +28,7 @@ public class Lecture {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lab_id" , nullable = false)
+    @JoinColumn(name = "lab_id" , nullable = false, foreignKey = @ForeignKey(name = "fk_lecture_lab"))
     private Lab lab;
 
     /**
@@ -61,6 +62,12 @@ public class Lecture {
     private LocalDateTime startTime;
 
     /**
+     * 강의 시작 요일
+     */
+    @Column(nullable = false)
+    private String day;
+
+    /**
      * 강의 종료 시간
      */
     @Column(nullable = false)
@@ -75,6 +82,7 @@ public class Lecture {
         this.endDate = endDate;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.day = startTime.getDayOfWeek().toString();
     }
 
 
