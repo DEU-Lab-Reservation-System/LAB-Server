@@ -62,7 +62,7 @@ public class Member extends BaseTime {
      * 학생 폰 번호
      */
     @Column(unique = true, nullable = false)
-    private String phoneNum;
+    private Integer phoneNum;
 
     /**
      * 학생의 권한
@@ -71,7 +71,7 @@ public class Member extends BaseTime {
     private Role role;
 
     @Builder
-    public Member(String userId, String password, String name, String email, String phoneNum, Role role) {
+    public Member(String userId, String password, String name, String email, Integer phoneNum, Role role) {
         this.userId = userId;
         this.password = password;
         this.name = name;
