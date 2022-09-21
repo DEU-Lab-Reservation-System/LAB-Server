@@ -17,11 +17,14 @@ public class MemberInfo {
     private String email;
     private String role;
 
+    private Boolean isAuth;
+
     public MemberInfo(Member saved) {
       this.id = saved.getId();
       this.userId = saved.getUserId();
       this.name = saved.getName();
       this.email = saved.getEmail();
       this.role = saved.getRole().getAuthority();
+      this.isAuth = saved.getIsAuth();
     }
 }

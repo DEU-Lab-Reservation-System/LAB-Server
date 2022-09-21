@@ -1,6 +1,9 @@
 package lab.reservation_server.service.impl;
 
+import lab.reservation_server.domain.Member;
+import lab.reservation_server.dto.request.MemberLogin;
 import lab.reservation_server.dto.request.MemberSignUp;
+import lab.reservation_server.dto.response.MemberInfo;
 import lab.reservation_server.exception.BadRequestException;
 import lab.reservation_server.exception.DuplicateException;
 import lab.reservation_server.repository.MemberRepository;
@@ -38,5 +41,25 @@ public class MemberServiceImpl implements MemberService {
         }
 
       return true;
+    }
+
+    /**
+     * 학생 로그인
+     * @param memberLogin 로그인을 하기 위한 아이디 및 비밀번호 받는 dto
+     * @return 학생의 최소한의 정보만 담은 MemberInfo Dto 반환
+     */
+    @Override
+    public MemberInfo login(MemberLogin memberLogin) {
+      // check user id is valid
+      Member memberFromDb = memberRepository.findByUserId(memberLogin.getUserId())
+          .orElseThrow(() -> new BadRequestException("아이디가 유효하지 않습니다."));
+
+      // check user password is valid
+      if (!memberFromDb.getPassword().equals(memberLogin.getPassword())) {
+        throw new BadRequestException("아이디 혹은 비밀번호가 유효하지 않습니다.");
+      }
+
+      // return memberinfo
+      return new MemberInfo(memberFromDb);
     }
 }

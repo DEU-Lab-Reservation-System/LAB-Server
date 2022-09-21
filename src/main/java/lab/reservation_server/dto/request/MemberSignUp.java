@@ -44,7 +44,7 @@ public class MemberSignUp {
 
     @NotNull(message = "폰번호를 입력해주세요, 공백 X")
     @ApiModelProperty(value = "학생의 폰번호 , '-' 없이 입력해주세요")
-    private Integer phoneNum;
+    private String phoneNum;
 
     public Member toEntity(MemberSignUp memberSignUp) {
         return Member.builder()
@@ -54,6 +54,7 @@ public class MemberSignUp {
                 .email(memberSignUp.getEmail())
                 .phoneNum(memberSignUp.getPhoneNum())
                 .role(Role.USER)
+                .isAuth(true)
                 .build();
     }
 }

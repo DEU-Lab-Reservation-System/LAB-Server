@@ -62,7 +62,7 @@ public class Member extends BaseTime {
      * 학생 폰 번호
      */
     @Column(unique = true, nullable = false)
-    private Integer phoneNum;
+    private String phoneNum;
 
     /**
      * 학생의 권한
@@ -70,14 +70,21 @@ public class Member extends BaseTime {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    /**
+     * 학생 인증 여부
+     */
+    @Column(nullable = false)
+    private Boolean isAuth;
+
     @Builder
-    public Member(String userId, String password, String name, String email, Integer phoneNum, Role role) {
+    public Member(String userId, String password, String name, String email, String phoneNum, Role role, Boolean isAuth) {
         this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
         this.phoneNum = phoneNum;
         this.role = role;
+        this.isAuth = isAuth;
     }
 
 }
