@@ -33,7 +33,7 @@ public class Reservation extends BaseTime {
     @JoinColumn(name = "member_id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "fk_reservation_member"))
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lab_id" , nullable = false, foreignKey = @ForeignKey(name = "fk_reservation_lab"))
     private Lab lab;
 

@@ -29,12 +29,11 @@ public class MemberController {
         return ResponseEntity.ok("회원가입에 성공하였습니다.");
     }
 
-    @PostMapping("api/member/login")
+    @PostMapping("/api/member/login")
     @ApiOperation(value="로그인" , notes = "학생 로그인을 할 수 있다.")
     public ResponseEntity<MemberInfo> login(@RequestBody @Valid MemberLogin memberLogin) {
         MemberInfo memberInfo = memberService.login(memberLogin);
         return ResponseEntity.ok(memberInfo);
     }
-
 
 }
