@@ -5,6 +5,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
 import lab.reservation_server.dto.request.ExpireDate;
+import lab.reservation_server.dto.request.TokenCheckDto;
+import lab.reservation_server.dto.response.token.MemberIsAuth;
 import lab.reservation_server.dto.response.token.TokenValue;
 import lab.reservation_server.service.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,13 @@ public class TokenController {
       TokenValue tokenValue = new TokenValue(token);
 
       return ResponseEntity.ok(tokenValue);
+    }
+
+    @PostMapping("/api/token/check")
+    @ApiOperation(value="토큰 유효성 검사" , notes = "유효한 토큰인지 검사한다.")
+    public ResponseEntity<MemberIsAuth> checkToken(@RequestBody @Valid TokenCheckDto tokenCheckDto) {
+      MemberIsAuth memberIsAuth = tokenService.checkToken(tokenCheckDto);
+      return ResponseEntity.ok(memberIsAuth);
     }
 
 

@@ -87,4 +87,10 @@ public class Member extends BaseTime {
         this.isAuth = isAuth;
     }
 
+    /**
+     * 토큰 인증이 완료되면 isAuth 필드 true로 변경
+     */
+    public void updateAuth(boolean isAuth) {
+        this.isAuth = isAuth;
+    }
 }
