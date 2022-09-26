@@ -20,10 +20,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberSignUp {
 
-    @NotBlank(message = "조교가 알려준 토큰을 입력해주세요, 공백 X")
-    @ApiModelProperty(value = "조교가 제공한 토큰")
-    private String token;
-
     @NotBlank(message = "학번을 넣어주세요, 공백 X")
     @ApiModelProperty(value = "학생의 학번")
     private String userId;
@@ -54,7 +50,7 @@ public class MemberSignUp {
                 .email(memberSignUp.getEmail())
                 .phoneNum(memberSignUp.getPhoneNum())
                 .role(Role.USER)
-                .isAuth(true)
+                .isAuth(false)
                 .build();
     }
 }

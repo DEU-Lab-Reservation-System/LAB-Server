@@ -29,17 +29,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
       public Boolean SignUp(MemberSignUp memberSignUp) {
-        // check token is valid
-        tokenRepository.findByValue(memberSignUp.getToken())
-          .orElseThrow(() -> new BadRequestException("토큰이 유효하지 않습니다."));
-
-        // member 저장
+        // member 저장 후 unique 제약 조건으로 이미 존재하는 회원일 경우 error 처리
         try {
            memberRepository.save(memberSignUp.toEntity(memberSignUp));
         } catch (DataIntegrityViolationException e) {
           throw new DuplicateException("이미 존재하는 회원입니다.");
         }
-
       return true;
     }
 
