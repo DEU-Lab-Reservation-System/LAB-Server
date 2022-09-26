@@ -28,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     @Transactional
-      public Boolean SignUp(MemberSignUp memberSignUp) {
+      public Boolean signUp(MemberSignUp memberSignUp) {
         // member 저장 후 unique 제약 조건으로 이미 존재하는 회원일 경우 error 처리
         try {
            memberRepository.save(memberSignUp.toEntity(memberSignUp));

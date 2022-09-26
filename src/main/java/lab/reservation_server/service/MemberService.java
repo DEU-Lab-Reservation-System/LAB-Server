@@ -6,7 +6,7 @@ import lab.reservation_server.dto.response.MemberInfo;
 
 public interface MemberService {
 
-    Boolean SignUp(MemberSignUp memberSignUp);
+    Boolean signUp(MemberSignUp memberSignUp);
 
     MemberInfo login(MemberLogin memberLogin);
 

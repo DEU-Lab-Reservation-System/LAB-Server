@@ -42,6 +42,10 @@ public class MemberSignUp {
     @ApiModelProperty(value = "학생의 폰번호 , '-' 없이 입력해주세요")
     private String phoneNum;
 
+    @NotNull(message = "사용자의 휴대폰 디바이스 토큰을 넣어주세요")
+    @ApiModelProperty(value = "사용자의 휴대폰 디바이스 토큰, 푸시 알림을 위해")
+    private String deviceToken;
+
     public Member toEntity(MemberSignUp memberSignUp) {
         return Member.builder()
                 .userId(memberSignUp.getUserId())
@@ -50,6 +54,7 @@ public class MemberSignUp {
                 .email(memberSignUp.getEmail())
                 .phoneNum(memberSignUp.getPhoneNum())
                 .role(Role.USER)
+                .deviceToken(memberSignUp.getDeviceToken())
                 .isAuth(false)
                 .build();
     }

@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
 import lab.reservation_server.dto.request.MemberLogin;
 import lab.reservation_server.dto.request.MemberSignUp;
+import lab.reservation_server.dto.response.DefaultMessageResponse;
+import lab.reservation_server.dto.response.DefaultResponse;
 import lab.reservation_server.dto.response.MemberInfo;
 import lab.reservation_server.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +26,11 @@ public class MemberController {
 
     @PostMapping("/api/member")
     @ApiOperation(value="회원가입" , notes = "학생 회원가입을 할 수 있다.")
-    public ResponseEntity<String> signUp(@RequestBody @Valid MemberSignUp memberSignUp) {
-        memberService.SignUp(memberSignUp);
-        return ResponseEntity.ok("회원가입에 성공하였습니다.");
+    public ResponseEntity<DefaultMessageResponse> signUp(@RequestBody @Valid MemberSignUp memberSignUp) {
+        if (memberService.signUp(memberSignUp)){
+            return ResponseEntity.ok(new DefaultMessageResponse("회원가입 성공"));
+        }
+        return ResponseEntity.badRequest().body(new DefaultMessageResponse("회원가입 실패"));
     }
 
     @PostMapping("/api/member/login")

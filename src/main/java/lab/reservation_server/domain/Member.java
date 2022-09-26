@@ -71,19 +71,26 @@ public class Member extends BaseTime {
     private Role role;
 
     /**
+     * 학생 휴대폰의 디바이스 토큰
+     */
+    @Column(nullable = false)
+    private String deviceToken;
+
+    /**
      * 학생 인증 여부
      */
     @Column(nullable = false)
     private Boolean isAuth;
 
     @Builder
-    public Member(String userId, String password, String name, String email, String phoneNum, Role role, Boolean isAuth) {
+    public Member(String userId, String password, String name, String email, String phoneNum, Role role, String deviceToken, Boolean isAuth) {
         this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
         this.phoneNum = phoneNum;
         this.role = role;
+        this.deviceToken = deviceToken;
         this.isAuth = isAuth;
     }
 
