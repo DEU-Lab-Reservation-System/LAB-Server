@@ -2,6 +2,7 @@ package lab.reservation_server.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -59,7 +60,7 @@ public class Lecture {
      * 강의 시작 시간
      */
     @Column(nullable = false)
-    private LocalDateTime startTime;
+    private LocalTime startTime;
 
     /**
      * 강의 시작 요일
@@ -71,18 +72,18 @@ public class Lecture {
      * 강의 종료 시간
      */
     @Column(nullable = false)
-    private LocalDateTime endTime;
+    private LocalTime endTime;
 
     @Builder
-    public Lecture(Lab lab, String title, String professor, LocalDate startDate, LocalDate endDate, LocalDateTime startTime, LocalDateTime endTime) {
+    public Lecture(Lab lab, String title, String professor, LocalDate startDate, LocalDate endDate, LocalTime startTime, String day, LocalTime endTime) {
         this.lab = lab;
         this.title = title;
         this.professor = professor;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;
+        this.day = day;
         this.endTime = endTime;
-        this.day = startTime.getDayOfWeek().toString();
     }
 
 

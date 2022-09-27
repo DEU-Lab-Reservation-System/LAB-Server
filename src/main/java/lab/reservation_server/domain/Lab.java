@@ -34,7 +34,7 @@ public class Lab {
      * 실습실 호수 (방번호)
      */
     @Column(unique = true, nullable = false)
-    private String number;
+    private String roomNumber;
 
     /**
      * 살숩실의 수용 가능 인원
@@ -43,8 +43,8 @@ public class Lab {
     private Integer capacity;
 
     @Builder
-    public Lab(String number, Integer capacity) {
-        this.number = number;
+    public Lab(String roomNumber, Integer capacity) {
+        this.roomNumber = roomNumber;
         this.capacity = capacity;
     }
 
