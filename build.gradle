@@ -27,9 +27,6 @@ dependencies {
 	// validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	// 기본적으로 초기화 된 프록시 객체만 노출, 초기화 되지 않은 프록시 객체는 노출 안함
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5'
-
 	// swagger
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation "io.springfox:springfox-swagger-ui:3.0.0"
