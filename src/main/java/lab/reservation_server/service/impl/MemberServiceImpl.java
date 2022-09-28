@@ -3,7 +3,7 @@ package lab.reservation_server.service.impl;
 import lab.reservation_server.domain.Member;
 import lab.reservation_server.dto.request.MemberLogin;
 import lab.reservation_server.dto.request.MemberSignUp;
-import lab.reservation_server.dto.response.MemberInfo;
+import lab.reservation_server.dto.response.member.MemberInfo;
 import lab.reservation_server.exception.BadRequestException;
 import lab.reservation_server.exception.DuplicateException;
 import lab.reservation_server.repository.MemberRepository;

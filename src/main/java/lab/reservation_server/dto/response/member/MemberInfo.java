@@ -1,4 +1,4 @@
-package lab.reservation_server.dto.response;
+package lab.reservation_server.dto.response.member;
 
 import lab.reservation_server.domain.Member;
 import lombok.AllArgsConstructor;
