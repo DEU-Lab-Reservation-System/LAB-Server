@@ -2,7 +2,9 @@ package lab.reservation_server.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
 import lab.reservation_server.dto.response.lab.LectureInLab;
+import lab.reservation_server.dto.response.lecture.LectureInfo;
 import lab.reservation_server.service.LabService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,16 @@ public class LabController {
     public ResponseEntity<LectureInLab> getLabTimeTable(@PathVariable("roomNumber") String roomNumber) {
         LectureInLab labTimeTable = labService.getLabTimeTable(roomNumber);
         return ResponseEntity.ok(labTimeTable);
+    }
+
+    /**
+     * 강의실 전체에 대한 모든 시간표 조회
+     */
+    @GetMapping("/api/labs/timetable")
+    @ApiOperation(value="모든 강의실 전체 시간표 조회" , notes = "강의실 전체에 대한 시간표를 조회할 수 있다.")
+    public ResponseEntity<List<LectureInfo>> getAllLabTimeTable() {
+        List<LectureInfo> allTimeTable = labService.getAllLabTimeTable();
+        return ResponseEntity.ok(allTimeTable);
     }
 
 

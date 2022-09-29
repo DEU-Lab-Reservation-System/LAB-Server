@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 public class LectureInLab {
 
   private String roomNumber;
-  private List<LectureInfo> lectures;
+  private List<LectureInfoForLab> lectures;
 
 }

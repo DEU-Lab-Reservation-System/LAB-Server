@@ -10,11 +10,12 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public class LectureInfo {
+public class LectureInfoForLab {
 
     private Long id;
     private String title;
     private String professor;
+    private String code;
     private String dayOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;

@@ -3,6 +3,7 @@ package lab.reservation_server.dto.request;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.UUID;
 import javax.validation.constraints.NotBlank;
 import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Lecture;
@@ -51,10 +52,11 @@ public class LectureSaveDto {
     /**
      * lectureSaveDto To Lecture Entity
      */
-    public Lecture toEntity(LectureSaveDto lectureSaveDto, Lab lab) {
+    public Lecture toEntity(LectureSaveDto lectureSaveDto, Lab lab,String code) {
         return Lecture.builder()
                 .title(lectureSaveDto.getTitle())
                 .professor(lectureSaveDto.getProfessor())
+                .code(code)
                 .startDate(lectureSaveDto.getStartDate())
                 .endDate(lectureSaveDto.getEndDate())
                 .lab(lab)

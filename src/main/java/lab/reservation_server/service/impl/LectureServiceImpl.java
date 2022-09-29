@@ -1,6 +1,7 @@
 package lab.reservation_server.service.impl;
 
 import java.util.List;
+import java.util.UUID;
 import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Lecture;
 import lab.reservation_server.dto.request.LectureSaveDto;
@@ -27,6 +28,9 @@ public class LectureServiceImpl implements LectureService {
     @Transactional
     public void addLecture(List<LectureSaveDto> saveDtoList) {
 
+      // 저장할때 같은 과목 코드를 가진다.
+      String code = UUID.randomUUID().toString().substring(0, 4);
+
       // lectureSaveDtoList를 순회하면서 lecture를 생성
       for (LectureSaveDto lectureSaveDto : saveDtoList) {
         Lab lab = labRepository.findByRoomNumber(lectureSaveDto.getRoomNumber())
@@ -38,7 +42,7 @@ public class LectureServiceImpl implements LectureService {
               throw new BadRequestException("해당 강의실에 해당 시간에 강의가 존재합니다.");
             });
 
-        Lecture lecture = lectureSaveDto.toEntity(lectureSaveDto,lab);
+        Lecture lecture = lectureSaveDto.toEntity(lectureSaveDto,lab,code);
         lectureRepository.save(lecture);
       }
 

@@ -45,6 +45,12 @@ public class Lecture {
     private String professor;
 
     /**
+     * 강의 고유 코드
+     */
+    @Column(nullable = false)
+    private String code;
+
+    /**
      * 정규 수업의 경우 개강 날짜
      */
     @Column(nullable = false)
@@ -75,10 +81,11 @@ public class Lecture {
     private LocalTime endTime;
 
     @Builder
-    public Lecture(Lab lab, String title, String professor, LocalDate startDate, LocalDate endDate, LocalTime startTime, String day, LocalTime endTime) {
+    public Lecture(Lab lab, String title, String professor, String code, LocalDate startDate, LocalDate endDate, LocalTime startTime, String day, LocalTime endTime) {
         this.lab = lab;
         this.title = title;
         this.professor = professor;
+        this.code = code;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;
