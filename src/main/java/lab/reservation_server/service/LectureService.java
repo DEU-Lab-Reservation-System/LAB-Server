@@ -1,8 +1,16 @@
 package lab.reservation_server.service;
 
 import java.util.List;
+import lab.reservation_server.dto.request.LectureEditDto;
 import lab.reservation_server.dto.request.LectureSaveDto;
+import lab.reservation_server.dto.response.lecture.LectureInfo;
 
 public interface LectureService {
-  void addLecture(List<LectureSaveDto> saveDtoList);
+  List<LectureInfo> addLecture(List<LectureSaveDto> saveDtoList);
+
+  void updateLecture(String code, List<LectureEditDto> lectures);
+
+  void deleteLecture(String code);
+
+  void checkIfCodeIsPresent(String code);
 }

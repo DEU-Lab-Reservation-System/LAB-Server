@@ -1,7 +1,7 @@
 package lab.reservation_server.dto.response.lecture;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+
+import lab.reservation_server.domain.Lecture;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,10 +12,23 @@ public class LectureInfo {
     private String title;
     private String professor;
     private String code;
-    private String roomNum;
+    private String roomNumber;
     private String dayOfWeek;
     private String startTime;
     private String endTime;
     private String startDate;
     private String endDate;
+
+    public LectureInfo(Lecture lecture, String roomNum) {
+        this.id = lecture.getId();
+        this.title = lecture.getTitle();
+        this.professor = lecture.getProfessor();
+        this.code = lecture.getCode();
+        this.roomNumber = roomNum;
+        this.dayOfWeek = lecture.getDay();
+        this.startTime = lecture.getStartTime().toString();
+        this.endTime = lecture.getEndTime().toString();
+        this.startDate = lecture.getStartDate().toString();
+        this.endDate = lecture.getEndDate().toString();
+    }
 }
