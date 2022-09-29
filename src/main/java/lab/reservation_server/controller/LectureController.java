@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -59,6 +60,19 @@ public class LectureController {
 
         lectureService.updateLecture(code,lectures);
         return ResponseEntity.ok(new DefaultMessageResponse("강의 시간표 수정 성공"));
+    }
+
+
+    /**
+     * 강의 시간표 삭제, 과목 code로 삭제
+     */
+    @DeleteMapping("/api/lectures/{code}")
+    @ApiOperation(value="강의 시간표 삭제" , notes = "강의 시간표를 과목 코드로 삭제할 수 있다.")
+    public ResponseEntity<DefaultMessageResponse> deleteLecture(@PathVariable(value = "code") String code) {
+        // 강의 코드가 존재하는지 확인
+        lectureService.checkIfCodeIsPresent(code);
+        lectureService.deleteLecture(code);
+        return ResponseEntity.ok(new DefaultMessageResponse("강의 시간표 삭제 성공"));
     }
 
 
