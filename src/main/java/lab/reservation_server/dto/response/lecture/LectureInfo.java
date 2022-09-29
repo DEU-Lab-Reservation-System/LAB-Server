@@ -13,7 +13,7 @@ public class LectureInfo {
     private String professor;
     private String code;
     private String roomNumber;
-    private String dayOfWeek;
+    private String day;
     private String startTime;
     private String endTime;
     private String startDate;
@@ -25,7 +25,7 @@ public class LectureInfo {
         this.professor = lecture.getProfessor();
         this.code = lecture.getCode();
         this.roomNumber = roomNum;
-        this.dayOfWeek = lecture.getDay();
+        this.day = lecture.getDay();
         this.startTime = lecture.getStartTime().toString();
         this.endTime = lecture.getEndTime().toString();
         this.startDate = lecture.getStartDate().toString();

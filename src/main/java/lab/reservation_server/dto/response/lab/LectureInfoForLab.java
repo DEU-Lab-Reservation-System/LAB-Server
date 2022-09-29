@@ -16,7 +16,7 @@ public class LectureInfoForLab {
     private String title;
     private String professor;
     private String code;
-    private String dayOfWeek;
+    private String day;
     private LocalTime startTime;
     private LocalTime endTime;
     private LocalDate startDate;
