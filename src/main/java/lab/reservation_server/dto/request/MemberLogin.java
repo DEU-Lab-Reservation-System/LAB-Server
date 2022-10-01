@@ -19,4 +19,9 @@ public class MemberLogin {
     @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
     @ApiModelProperty(value = "학생의 비밀번호")
     private String password;
+
+    @NotBlank(message = "토큰은 필수 입력 값입니다.")
+    @ApiModelProperty(value = "디바이스 토큰")
+    private String deviceToken;
+
 }

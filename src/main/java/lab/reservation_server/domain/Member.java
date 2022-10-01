@@ -72,8 +72,9 @@ public class Member extends BaseTime {
 
     /**
      * 학생 휴대폰의 디바이스 토큰
+     * 10-01, 회원 가입 시점에는 null이 가능하도록 변경
      */
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String deviceToken;
 
     /**
@@ -99,5 +100,9 @@ public class Member extends BaseTime {
      */
     public void updateAuth(boolean isAuth) {
         this.isAuth = isAuth;
+    }
+
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 }
