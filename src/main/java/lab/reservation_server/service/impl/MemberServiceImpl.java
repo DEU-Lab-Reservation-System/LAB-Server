@@ -4,11 +4,13 @@ import lab.reservation_server.domain.Member;
 import lab.reservation_server.dto.request.MemberLogin;
 import lab.reservation_server.dto.request.MemberSignUp;
 import lab.reservation_server.dto.response.member.MemberInfo;
+import lab.reservation_server.dto.response.reservation.ReservationInfo;
 import lab.reservation_server.exception.BadRequestException;
 import lab.reservation_server.exception.DuplicateException;
 import lab.reservation_server.repository.MemberRepository;
 import lab.reservation_server.repository.TokenRepository;
 import lab.reservation_server.service.MemberService;
+import lab.reservation_server.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
-    private final TokenRepository tokenRepository;
+    private final ReservationService reservationService;
 
     /**
      * 회원가입
@@ -44,6 +46,7 @@ public class MemberServiceImpl implements MemberService {
      * @return 학생의 최소한의 정보만 담은 MemberInfo Dto 반환
      */
     @Override
+    @Transactional
     public MemberInfo login(MemberLogin memberLogin) {
       // check user id is valid
       Member memberFromDb = memberRepository.findByUserId(memberLogin.getUserId())
@@ -54,7 +57,15 @@ public class MemberServiceImpl implements MemberService {
         throw new BadRequestException("아이디 혹은 비밀번호가 유효하지 않습니다.");
       }
 
+      // 사용자의 디바이스 토큰 업데이트
+      memberFromDb.updateDeviceToken(memberLogin.getDeviceToken());
+
+      // reservation service를 통해서 reservationInfo 가져오기
+      ReservationInfo reservation =
+          reservationService.getReservationFromMemberId(memberFromDb.getId());
+
+
       // return memberinfo
-      return new MemberInfo(memberFromDb);
+      return new MemberInfo(memberFromDb,reservation);
     }
 }
