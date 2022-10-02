@@ -38,19 +38,23 @@ public class MemberSignUp {
     @ApiModelProperty(value = "학생의 이메일")
     private String email;
 
-    @NotNull(message = "폰번호를 입력해주세요, 공백 X")
+    @NotBlank(message = "폰번호를 입력해주세요, 공백 X")
     @ApiModelProperty(value = "학생의 폰번호 , '-' 없이 입력해주세요")
     private String phoneNum;
+
+    @NotBlank(message = "자신이 누구인지 상태를 알려주세요")
+    @ApiModelProperty(value = "학생 혹은 관리자의 상태 , GRADUATE, TAKEOFF, USER, ADMIN으로 넣어주세요")
+    private String role;
 
 
     public Member toEntity(MemberSignUp memberSignUp) {
         return Member.builder()
-                .userId(memberSignUp.getUserId())
-                .password(memberSignUp.getPassword())
-                .name(memberSignUp.getName())
-                .email(memberSignUp.getEmail())
-                .phoneNum(memberSignUp.getPhoneNum())
-                .role(Role.USER)
+                .userId(userId)
+                .password(password)
+                .name(name)
+                .email(email)
+                .phoneNum(phoneNum)
+                .role(Role.valueOf(role))
                 .isAuth(false)
                 .build();
     }
