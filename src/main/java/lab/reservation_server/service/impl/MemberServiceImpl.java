@@ -3,6 +3,7 @@ package lab.reservation_server.service.impl;
 import lab.reservation_server.domain.Member;
 import lab.reservation_server.dto.request.MemberLogin;
 import lab.reservation_server.dto.request.MemberSignUp;
+import lab.reservation_server.dto.request.UserIdCheck;
 import lab.reservation_server.dto.response.member.MemberInfo;
 import lab.reservation_server.dto.response.reservation.ReservationInfo;
 import lab.reservation_server.exception.BadRequestException;
@@ -49,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public MemberInfo login(MemberLogin memberLogin) {
       // check user id is valid
-      Member memberFromDb = memberRepository.findByUserId(memberLogin.getUserId())
+      Member memberFromDb = memberRepository.findByUserIdWithReservation(memberLogin.getUserId())
           .orElseThrow(() -> new BadRequestException("아이디가 유효하지 않습니다."));
 
       // check user password is valid
@@ -68,4 +69,13 @@ public class MemberServiceImpl implements MemberService {
       // return memberinfo
       return new MemberInfo(memberFromDb,reservation);
     }
+
+    /**
+     * 사용자의 아이디 중복 확인
+     */
+    @Override
+      public boolean checkId(UserIdCheck userIdCheck) {
+        return memberRepository.findByUserId(userIdCheck.getUserId()).isPresent();
+      }
+
 }

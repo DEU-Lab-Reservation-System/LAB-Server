@@ -9,5 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
   @Query("select m from Member m left join fetch m.reservation where m.userId = :userId")
-  Optional<Member> findByUserId(@Param("userId") String userId);
+  Optional<Member> findByUserIdWithReservation(@Param("userId") String userId);
+
+  Optional<Member> findByUserId(String userId);
 }

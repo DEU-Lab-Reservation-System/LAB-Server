@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
 import lab.reservation_server.dto.request.MemberLogin;
 import lab.reservation_server.dto.request.MemberSignUp;
+import lab.reservation_server.dto.request.UserIdCheck;
 import lab.reservation_server.dto.response.DefaultMessageResponse;
 import lab.reservation_server.dto.response.member.MemberInfo;
 import lab.reservation_server.service.MemberService;
@@ -39,4 +40,16 @@ public class MemberController {
         return ResponseEntity.ok(memberInfo);
     }
 
+
+    /**
+     * 아이디 중복 확인
+     */
+    @PostMapping("/api/member/check")
+    @ApiOperation(value="아이디 중복 확인" , notes = "아이디 중복 확인을 할 수 있다.")
+    public ResponseEntity<DefaultMessageResponse> checkId(@RequestBody @Valid UserIdCheck userIdCheck) {
+        if (!memberService.checkId(userIdCheck)){
+            return ResponseEntity.ok(new DefaultMessageResponse("사용 가능한 아이디 입니다."));
+        }
+        return ResponseEntity.badRequest().body(new DefaultMessageResponse("이미 사용중인 아이디 입니다."));
+    }
 }
