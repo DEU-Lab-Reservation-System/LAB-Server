@@ -74,4 +74,10 @@ public class LabServiceImpl implements LabService {
 
         return lectureInfos;
     }
+
+    @Override
+    public Lab findLabWithRoomNumber(String roomNumber) {
+        return labRepository.findByRoomNumber(roomNumber)
+            .orElseThrow(() -> new BadRequestException("해당 강의실이 존재하지 않습니다."));
+    }
 }

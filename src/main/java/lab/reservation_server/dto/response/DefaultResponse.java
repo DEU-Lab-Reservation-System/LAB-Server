@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public class DefaultResponse {
 
-    private HttpStatus status;
+    private HttpStatus code;
     private String message;
 
     public static DefaultResponse of(HttpStatus status, String message) {

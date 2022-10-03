@@ -1,7 +1,10 @@
 package lab.reservation_server.repository;
 
+import java.sql.Date;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
+import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Lecture;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,4 +25,12 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
   void deleteAllByCode(@Param("code") String code);
 
   boolean existsByCode(String code);
+
+
+  /**
+   * 현재 시간에 강의가 있는지 확인
+   */
+  @Query("select l from Lecture l where l.lab =:lab and l.day = :day and l.endTime >= :now and l.startTime <= :now")
+  Optional<Lecture> checkNowByLabId(@Param("lab") Lab lab, @Param("day") String day, @Param("now") LocalTime now);
+
 }

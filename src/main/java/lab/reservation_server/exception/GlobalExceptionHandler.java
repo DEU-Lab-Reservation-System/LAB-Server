@@ -2,6 +2,7 @@ package lab.reservation_server.exception;
 
 import javax.validation.ConstraintViolationException;
 import lab.reservation_server.dto.response.DefaultMessageResponse;
+import lab.reservation_server.dto.response.DefaultResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,6 +85,17 @@ public class GlobalExceptionHandler {
         DefaultMessageResponse response = DefaultMessageResponse.of(ex.getConstraintViolations().iterator().next().getMessage());
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    /**
+     * LecturePresentException
+     */
+    @ExceptionHandler(LecturePresentException.class)
+    public ResponseEntity<DefaultResponse> handle(LecturePresentException ex) {
+
+        DefaultResponse response = DefaultResponse.of(HttpStatus.NO_CONTENT, ex.getMessage());
+
+        return ResponseEntity.ok(response);
     }
 
 }

@@ -1,24 +1,35 @@
 package lab.reservation_server.service.impl;
 
+import java.sql.Date;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Lecture;
 import lab.reservation_server.dto.request.LectureEditDto;
 import lab.reservation_server.dto.request.LectureSaveDto;
 import lab.reservation_server.dto.response.lecture.LectureInfo;
 import lab.reservation_server.exception.BadRequestException;
+import lab.reservation_server.exception.LecturePresentException;
 import lab.reservation_server.repository.LabRepository;
 import lab.reservation_server.repository.LectureRepository;
 import lab.reservation_server.service.LectureService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class LectureServiceImpl implements LectureService {
 
     private final LectureRepository lectureRepository;
@@ -97,7 +108,21 @@ public class LectureServiceImpl implements LectureService {
       }
     }
 
-  /**
+    /**
+     * 현재 시간에 강의가 있는지 확인
+     */
+    @Override
+    public void checkLectureNow(Lab lab, LocalDateTime now) {
+      // 현재 시간에 강의가 있는지 확인
+        if (lectureRepository.checkNowByLabId(lab,
+            now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+            now.toLocalTime()).isPresent()) {
+            throw new LecturePresentException("현재 시간에 강의가 있습니다.");
+        }
+    }
+
+
+     /**
      * roomNumber로 lab을 찾아서 반환
      */
     private Lab checkIfLabPresent(String roomNumber) {
