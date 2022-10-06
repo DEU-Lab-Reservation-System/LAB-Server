@@ -3,6 +3,7 @@ package lab.reservation_server.dto.response.reservation;
 import java.util.List;
 import java.util.stream.Collectors;
 import lab.reservation_server.domain.Reservation;
+import lab.reservation_server.dto.response.labmanager.MemberSimpleInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,4 +15,6 @@ import lombok.Getter;
 public class CurrentReservation {
 
     private List<String> seatList;
+
+    private MemberSimpleInfo manager;
 }
