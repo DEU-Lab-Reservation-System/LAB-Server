@@ -30,7 +30,7 @@ public class Reservation extends BaseTime {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "fk_reservation_member"))
+    @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(name = "fk_reservation_member"))
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
