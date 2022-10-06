@@ -41,7 +41,7 @@ public class LabController {
     /**
      * 강의실 전체에 대한 모든 시간표 조회
      */
-    @GetMapping("/api/labs/timetable")
+    @GetMapping("/api/lectures")
     @ApiOperation(value="모든 강의실 전체 시간표 조회" , notes = "강의실 전체에 대한 시간표를 조회할 수 있다.")
     public ResponseEntity<List<LectureInfo>> getAllLabTimeTable() {
         List<LectureInfo> allTimeTable = labService.getAllLabTimeTable();
