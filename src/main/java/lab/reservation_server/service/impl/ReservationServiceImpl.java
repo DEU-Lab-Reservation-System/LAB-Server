@@ -2,15 +2,15 @@ package lab.reservation_server.service.impl;
 
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Reservation;
+import lab.reservation_server.dto.response.labmanager.MemberSimpleInfo;
 import lab.reservation_server.dto.response.reservation.CurrentReservation;
 import lab.reservation_server.dto.response.reservation.ReservationInfo;
 import lab.reservation_server.repository.ReservationRepository;
+import lab.reservation_server.service.LabManagerService;
 import lab.reservation_server.service.LabService;
 import lab.reservation_server.service.LectureService;
 import lab.reservation_server.service.ReservationService;
@@ -28,16 +28,18 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final LabService labService;
     private final LectureService lectureService;
+    private final LabManagerService labManagerService;
 
     /**
-     * member의 id를 통해서 예약 정보를 가져온다.
+     * member의 id를 통해서 <b>가장 최근의</b> 예약 정보를 가져온다.
      */
       @Override
       public ReservationInfo getReservationFromMemberId(Long memberId) {
 
         // 값이 있으면, reservationInfo를 만들어서 반환, 없으면 null 반환
+        // find first of list and conver to ReservationInfo
         ReservationInfo reservationInfo =
-            reservationRepository.findReservationByMemberId(memberId).map(ReservationInfo::new)
+            reservationRepository.findReservationByMemberId(memberId).map(ReservationInfo::toCurrentReservation)
                 .orElse(null);
 
         return reservationInfo;
@@ -58,11 +60,15 @@ public class ReservationServiceImpl implements ReservationService {
         // 현재 시간 기준으로 해당 강의실에 수업이 없으면, 현재 이용중인 좌석 반환
         List<Reservation> reservations = reservationRepository.findCurrentReservation(lab,now).orElse(null);
 
+        // 현재 날짜 기준와 lab실 정보를 통해서 현재 방장을 찾는다.
+        MemberSimpleInfo memberSimpleInfo = labManagerService.searchMemberByLabId(lab.getId());
+
+
         // reservations의 seatNumber를 List로 반환
         List<String> seatNums = reservations.stream()
             .map(Reservation::getSeatNum)
             .collect(Collectors.toList());
 
-        return new CurrentReservation(seatNums);
+        return new CurrentReservation(seatNums, memberSimpleInfo);
       }
 }
