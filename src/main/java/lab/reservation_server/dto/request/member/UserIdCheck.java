@@ -1,4 +1,4 @@
-package lab.reservation_server.dto.request;
+package lab.reservation_server.dto.request.member;
 
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.Pattern;

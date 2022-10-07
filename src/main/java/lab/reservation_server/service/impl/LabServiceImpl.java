@@ -23,6 +23,9 @@ public class LabServiceImpl implements LabService {
 
     private final LabRepository labRepository;
 
+    /**
+     * 강의실 번호별로, 강의 목록을 반환
+     */
     @Override
     public LectureInLab getLabTimeTable(String roomNumber) {
 
@@ -50,6 +53,9 @@ public class LabServiceImpl implements LabService {
         return new LectureInLab(roomNumber, lectures);
     }
 
+    /**
+     * 모든 강의실에 개설된 강의 목록을 반환
+     */
     @Override
     public List<LectureInfo> getAllLabTimeTable() {
         List<Lab> labs = labRepository.findAll();
@@ -75,6 +81,9 @@ public class LabServiceImpl implements LabService {
         return lectureInfos;
     }
 
+    /**
+     * 강의실이 존재하는지 확인
+     */
     @Override
     public Lab findLabWithRoomNumber(String roomNumber) {
         return labRepository.findByRoomNumber(roomNumber)

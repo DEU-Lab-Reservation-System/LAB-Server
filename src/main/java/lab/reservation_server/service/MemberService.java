@@ -1,8 +1,8 @@
 package lab.reservation_server.service;
 
-import lab.reservation_server.dto.request.MemberLogin;
-import lab.reservation_server.dto.request.MemberSignUp;
-import lab.reservation_server.dto.request.UserIdCheck;
+import lab.reservation_server.dto.request.member.MemberLogin;
+import lab.reservation_server.dto.request.member.MemberSignUp;
+import lab.reservation_server.dto.request.member.UserIdCheck;
 import lab.reservation_server.dto.response.member.MemberInfo;
 
 public interface MemberService {

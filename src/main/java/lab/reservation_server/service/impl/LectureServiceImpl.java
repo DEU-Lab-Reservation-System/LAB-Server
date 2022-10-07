@@ -1,20 +1,16 @@
 package lab.reservation_server.service.impl;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Lecture;
-import lab.reservation_server.dto.request.LectureEditDto;
-import lab.reservation_server.dto.request.LectureSaveDto;
+import lab.reservation_server.dto.request.lecture.LectureEditDto;
+import lab.reservation_server.dto.request.lecture.LectureSaveDto;
 import lab.reservation_server.dto.response.lecture.LectureInfo;
 import lab.reservation_server.exception.BadRequestException;
 import lab.reservation_server.exception.LecturePresentException;
@@ -23,7 +19,6 @@ import lab.reservation_server.repository.LectureRepository;
 import lab.reservation_server.service.LectureService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

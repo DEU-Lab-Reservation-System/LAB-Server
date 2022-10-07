@@ -1,6 +1,6 @@
 package lab.reservation_server.service;
 
-import lab.reservation_server.dto.request.TimeStartToEnd;
+import lab.reservation_server.dto.request.reservation.TimeStartToEnd;
 import lab.reservation_server.dto.response.reservation.CurrentReservation;
 import lab.reservation_server.dto.response.reservation.ReservationInfo;
 

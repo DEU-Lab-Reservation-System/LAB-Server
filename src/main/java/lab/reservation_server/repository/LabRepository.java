@@ -10,7 +10,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface LabRepository extends JpaRepository<Lab, Long> {
 
-    //https://discourse.hibernate.org/t/query-specified-join-fetching-but-the-owner-of-the-fetched-association-was-not-present-in-the-select-list/258
+    /**
+     * 강의실 번호를 통해서 , 해당 강의실에 열린 강좌 데이터를 dto로 반환
+     */
     @Query("select new lab.reservation_server.dto.response.lab.LectureInfoForLab" +
         "(l.id, l.title, l.professor,l.code , l.day, l.startTime, l.endTime, l.startDate, l.endDate) " +
         "from Lecture l join l.lab lb where lb.roomNumber = :roomNum")

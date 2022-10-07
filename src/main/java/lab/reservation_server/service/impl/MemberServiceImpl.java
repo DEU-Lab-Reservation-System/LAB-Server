@@ -1,15 +1,14 @@
 package lab.reservation_server.service.impl;
 
 import lab.reservation_server.domain.Member;
-import lab.reservation_server.dto.request.MemberLogin;
-import lab.reservation_server.dto.request.MemberSignUp;
-import lab.reservation_server.dto.request.UserIdCheck;
+import lab.reservation_server.dto.request.member.MemberLogin;
+import lab.reservation_server.dto.request.member.MemberSignUp;
+import lab.reservation_server.dto.request.member.UserIdCheck;
 import lab.reservation_server.dto.response.member.MemberInfo;
 import lab.reservation_server.dto.response.reservation.ReservationInfo;
 import lab.reservation_server.exception.BadRequestException;
 import lab.reservation_server.exception.DuplicateException;
 import lab.reservation_server.repository.MemberRepository;
-import lab.reservation_server.repository.TokenRepository;
 import lab.reservation_server.service.MemberService;
 import lab.reservation_server.service.ReservationService;
 import lombok.RequiredArgsConstructor;

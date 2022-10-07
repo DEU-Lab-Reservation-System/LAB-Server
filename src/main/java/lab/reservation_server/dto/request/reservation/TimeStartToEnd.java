@@ -1,4 +1,4 @@
-package lab.reservation_server.dto.request;
+package lab.reservation_server.dto.request.reservation;
 
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalTime;

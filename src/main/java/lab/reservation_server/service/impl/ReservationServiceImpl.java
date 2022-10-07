@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Reservation;
-import lab.reservation_server.dto.request.TimeStartToEnd;
+import lab.reservation_server.dto.request.reservation.TimeStartToEnd;
 import lab.reservation_server.dto.response.labmanager.MemberSimpleInfo;
 import lab.reservation_server.dto.response.reservation.CurrentReservation;
 import lab.reservation_server.dto.response.reservation.ReservationInfo;

@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import lab.reservation_server.domain.Lab;
-import lab.reservation_server.dto.request.LectureEditDto;
-import lab.reservation_server.dto.request.LectureSaveDto;
+import lab.reservation_server.dto.request.lecture.LectureEditDto;
+import lab.reservation_server.dto.request.lecture.LectureSaveDto;
 import lab.reservation_server.dto.response.lecture.LectureInfo;
 
 public interface LectureService {

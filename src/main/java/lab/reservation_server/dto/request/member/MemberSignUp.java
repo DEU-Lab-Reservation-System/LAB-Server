@@ -1,11 +1,10 @@
-package lab.reservation_server.dto.request;
+package lab.reservation_server.dto.request.member;
 
 
 
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import lab.reservation_server.domain.Member;
 import lab.reservation_server.domain.enums.Role;

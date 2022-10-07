@@ -12,13 +12,18 @@ import org.springframework.data.repository.query.Param;
 
 public interface LectureRepository extends JpaRepository<Lecture, Long> {
 
-  // check duplicate lecture
-  // @Query("select l from Lecture l where l.lab.roomNumber = :roomNum and l.day = :day and l.endTime > :startTime and l.startTime < :endTime")
+
+  /**
+   * 강의실 번호, 요일, 시작 시간, 종료시간을 통해서 해당 강의실에 똑같은 시간대로 강의가 존재하는지 확인
+   */
   @Query("select l from Lecture l join fetch l.lab lb where lb.roomNumber = :roomNum and l.day = :day and l.endTime > :startTime and l.startTime < :endTime")
   Optional<Lecture> checkDuplicate(@Param("roomNum") String roomNumber,@Param("day") String day,@Param("startTime") LocalTime startTime,@Param("endTime") LocalTime endTime);
 
   Optional<Lecture> findByCode(String code);
 
+  /**
+   * 과목 코드를 통해서 강의 삭제
+   */
   @Modifying
   @Query("delete from Lecture l where l.code = :code")
   void deleteAllByCode(@Param("code") String code);

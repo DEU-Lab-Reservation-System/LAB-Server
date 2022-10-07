@@ -17,6 +17,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
   @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where m.id = :memberId order by r.endTime desc")
   Optional<List<Reservation>> findReservationByMemberId(@Param("memberId") Long memberId);
 
+  /**
+   * 해당 강의실에 현재 시간에 이용중인 예약 내역을 반환한다.
+   */
   @Query("select r from Reservation r where r.lab =:lab and r.endTime > :now and r.startTime < :now")
   Optional<List<Reservation>> findCurrentReservation(@Param("lab") Lab lab,@Param("now") LocalDateTime now);
 

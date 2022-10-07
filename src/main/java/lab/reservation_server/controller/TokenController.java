@@ -4,8 +4,8 @@ package lab.reservation_server.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
-import lab.reservation_server.dto.request.ExpireDate;
-import lab.reservation_server.dto.request.TokenCheckDto;
+import lab.reservation_server.dto.request.token.ExpireDate;
+import lab.reservation_server.dto.request.member.TokenCheckDto;
 import lab.reservation_server.dto.response.token.MemberIsAuth;
 import lab.reservation_server.dto.response.token.TokenValue;
 import lab.reservation_server.service.TokenService;
@@ -27,9 +27,6 @@ public class TokenController {
     /**
      * 조교로 부터 만료 날짜를 받는다.
      * 토큰을 UUID 형식으로 발급하여 DB에 저장
-     * @return token
-     *
-     * @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
      */
     @PostMapping("/api/token")
     @ApiOperation(value="토큰 발급" , notes = "유효기간이 존재하는 토큰을 받을 수 있다.")
@@ -41,6 +38,9 @@ public class TokenController {
       return ResponseEntity.ok(tokenValue);
     }
 
+    /**
+     * 토큰 인증을 통해 사용자 인증
+     */
     @PostMapping("/api/token/check")
     @ApiOperation(value="토큰 유효성 검사" , notes = "유효한 토큰인지 검사한다.")
     public ResponseEntity<MemberIsAuth> checkToken(@RequestBody @Valid TokenCheckDto tokenCheckDto) {
