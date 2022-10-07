@@ -1,5 +1,7 @@
 package lab.reservation_server.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import lab.reservation_server.domain.enums.Role;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,9 +32,11 @@ public class Member extends BaseTime {
 
     /**
      * 학생이 예약한 내역
+     * 2022-10-08 해당 요일에 오전, 오후에 예약하고 사용한 내역을 DB에 저장하고 있기 때문에
+     * OneToOne -> OneToMany로 변경
      */
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY , cascade = CascadeType.REMOVE)
-    private Reservation reservation;
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY , cascade = CascadeType.REMOVE)
+    private List<Reservation> reservations = new ArrayList<>();
 
     /**
      * 학생의 학번

@@ -50,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public MemberInfo login(MemberLogin memberLogin) {
       // check user id is valid
-      Member memberFromDb = memberRepository.findByUserIdWithReservation(memberLogin.getUserId())
+      Member memberFromDb = memberRepository.findByUserId(memberLogin.getUserId())
           .orElseThrow(() -> new BadRequestException("아이디가 유효하지 않습니다."));
 
       // check user password is valid

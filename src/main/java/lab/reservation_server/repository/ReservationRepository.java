@@ -19,4 +19,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
   @Query("select r from Reservation r where r.lab =:lab and r.endTime > :now and r.startTime < :now")
   Optional<List<Reservation>> findCurrentReservation(@Param("lab") Lab lab,@Param("now") LocalDateTime now);
+
+  /**
+   * 특정 강의실, 특정 시간대 범위에 이용중인 reservation을 반환한다. (오늘 기준으로 검색, 스케줄러를 통해 일주일 단위로 삭제 해도
+   * 올바른 데이터 반환)
+   */
+  @Query("select r from Reservation r where r.lab =:lab and r.endTime > :startTime and r.startTime < :endTime and Date(r.createdDate) = :today")
+  Optional<List<Reservation>> findCurrentReservationBetweenTime(@Param("lab") Lab lab,
+                                                                @Param("startTime") LocalDateTime startTime,
+                                                                @Param("endTime") LocalDateTime endTime,
+                                                                @Param("today") java.sql.Date today);
 }

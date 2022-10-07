@@ -29,7 +29,13 @@ public class Reservation extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    /**
+     * 2022-10-08
+     * Reservation 입장에서 오늘 예약한 Member가 2건 이상일 수 있기 때문에,
+     * OneToOne에서 ManyToOne으로 변경 (2건일 수 있는 경우는 예약이 종료되면, 바로 Reservation DB 데이터를
+     * 날리지 않기 때문이다. 추후 스케줄링을 통해서 사용자가 사용하지 않는 시간대에 삭제하기 위해)
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false, foreignKey = @ForeignKey(name = "fk_reservation_member"))
     private Member member;
 

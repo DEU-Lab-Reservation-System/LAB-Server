@@ -1,11 +1,13 @@
 package lab.reservation_server.service.impl;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Reservation;
+import lab.reservation_server.dto.request.TimeStartToEnd;
 import lab.reservation_server.dto.response.labmanager.MemberSimpleInfo;
 import lab.reservation_server.dto.response.reservation.CurrentReservation;
 import lab.reservation_server.dto.response.reservation.ReservationInfo;
@@ -71,4 +73,38 @@ public class ReservationServiceImpl implements ReservationService {
 
         return new CurrentReservation(seatNums, memberSimpleInfo);
       }
+
+    /**
+     * 특정 강의실, 특정 시간대에 예약 현황과 해당 강의실 방장 정보를 가져온다.
+     */
+    @Override
+    public CurrentReservation checkReservationBetweenTime(String roomNumber, TimeStartToEnd timeStartToEnd) {
+
+      // 강의실 데이터 조회
+      Lab lab = labService.findLabWithRoomNumber(roomNumber);
+
+      // 시간 범위안에서 강의실에 수업이 있는지 확인, 있으면 LecturePresentException 내부적으로 반환
+      lectureService.checkLectureBetweenTime(lab,timeStartToEnd.getStartTime(),timeStartToEnd.getEndTime());
+
+      // 시간 범위 안으로 이용중인 예약 현황을 보여준다.
+      List<Reservation> reservations =
+          reservationRepository.findCurrentReservationBetweenTime
+              (lab, LocalDateTime.of(LocalDate.now(), timeStartToEnd.getStartTime()),
+                  LocalDateTime.of(LocalDate.now(), timeStartToEnd.getEndTime()),
+                  java.sql.Date.valueOf(LocalDate.now())).orElse(null);
+
+      // 현재 날짜 기준와 lab실 정보를 통해서 해당 강의실의 방장 데이터를 가져온다.
+      MemberSimpleInfo memberSimpleInfo = labManagerService.searchMemberByLabId(lab.getId());
+
+      // seatNums를 추출
+      List<String> seatNums = reservations.stream()
+          .map(Reservation::getSeatNum)
+          .collect(Collectors.toList());
+
+      return new CurrentReservation(seatNums, memberSimpleInfo);
+    }
+
+
+
+
 }
