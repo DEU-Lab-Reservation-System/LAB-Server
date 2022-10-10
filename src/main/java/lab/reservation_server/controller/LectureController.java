@@ -44,22 +44,18 @@ public class LectureController {
      * class 단에서 Validated를 선언하고
      * Valid를 객체에 적용하면, 500 ConstraintViolationException 가 발생한다.
      */
-    @PutMapping("/api/lectures/{code}")
+    @PutMapping("/api/lectures")
     @ApiOperation(value="강의 시간표 수정" , notes = "강의 시간표를 수정할 수 있다.")
-    public ResponseEntity<DefaultMessageResponse> updateLecture(@RequestBody List<@Valid LectureEditDto> lectures,
-                                                                @PathVariable(value = "code") String code) {
+    public ResponseEntity<?> updateLecture(@RequestBody List<@Valid LectureEditDto> lectures) {
+
+        // 강의 코드 추출
+        String code = lectures.get(0).getCode();
 
         // 강의 코드가 존재하는지 확인
         lectureService.checkIfCodeIsPresent(code);
 
-        // 강의 시간표가 없을 경우
-        if(lectures.get(0).getRoomNumber().isEmpty()){
-            lectureService.deleteLecture(code);
-            return ResponseEntity.ok(new DefaultMessageResponse("강의 시간표 삭제 성공"));
-        }
-
-        lectureService.updateLecture(code,lectures);
-        return ResponseEntity.ok(new DefaultMessageResponse("강의 시간표 수정 성공"));
+        List<LectureEditDto> lectureEditDtos = lectureService.updateLecture(code, lectures);
+        return ResponseEntity.ok(lectureEditDtos);
     }
 
 

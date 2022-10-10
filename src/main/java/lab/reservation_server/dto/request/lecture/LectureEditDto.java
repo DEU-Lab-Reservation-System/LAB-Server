@@ -21,6 +21,10 @@ public class LectureEditDto {
     @ApiModelProperty(value = "수업명")
     private String title;
 
+    @NotBlank(message = "강의 코드는 필수 입력값입니다.")
+    @ApiModelProperty(value = "강의 코드")
+    private String code;
+
     @NotBlank(message = "강의 담당교수님 성함은 필수 입니다.")
     @ApiModelProperty(value = "수업 담당 교수님 성함")
     private String professor;

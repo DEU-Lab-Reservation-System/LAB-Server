@@ -59,30 +59,37 @@ public class LectureServiceImpl implements LectureService {
 
   /**
      * 강의 시간표 수정
+     * https://interconnection.tistory.com/122
      */
     @Override
-    @Transactional
-    public void updateLecture(String code, List<LectureEditDto> lectures) {
+    @Transactional(rollbackFor = RuntimeException.class)
+    public List<LectureEditDto> updateLecture(String code, List<LectureEditDto> lectures) {
 
-      // delete all lecture with code
-      lectureRepository.deleteAllByCode(code);
+      try{
+        // delete all lecture with code
+        lectureRepository.deleteAllByCode(code);
 
-      // lectureEditDtoList를 순회하면서 lecture를 생성
-      for (LectureEditDto lectureEditDto : lectures) {
+        // lectureEditDtoList를 순회하면서 lecture를 생성
+        for (LectureEditDto lectureEditDto : lectures) {
 
-        Lab lab = checkIfLabPresent(lectureEditDto.getRoomNumber());
+          Lab lab = checkIfLabPresent(lectureEditDto.getRoomNumber());
 
-        // check lecture between start time and end time on same day and same lab
-        checkDuplicateSchedule(lab.getRoomNumber(), lectureEditDto.getDay(),
-            lectureEditDto.getStartTime(), lectureEditDto.getEndTime());
+          // check lecture between start time and end time on same day and same lab
+          checkDuplicateSchedule(lab.getRoomNumber(), lectureEditDto.getDay(),
+              lectureEditDto.getStartTime(), lectureEditDto.getEndTime());
 
-        Lecture lecture = lectureEditDto.toEntity(lectureEditDto,lab,code);
-        lectureRepository.save(lecture);
+          Lecture lecture = lectureEditDto.toEntity(lectureEditDto, lab, code);
+          lectureRepository.save(lecture);
+        }
+      } catch (Exception e) {
+        // 알 수 없는 문제로 강의 시간표 수정 실패 (rollback)
+        log.warn("강의 시간표 수정 실패되어 rollback 합니다.");
+        throw new BadRequestException("오류가 발생하여 강의 시간표 수정에 실패하였습니다.");
       }
 
-
-
+      return lectures;
     }
+
 
     /**
      * code로 강의 시간표 삭제

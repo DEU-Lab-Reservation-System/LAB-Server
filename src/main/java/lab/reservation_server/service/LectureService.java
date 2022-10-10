@@ -11,7 +11,7 @@ import lab.reservation_server.dto.response.lecture.LectureInfo;
 public interface LectureService {
   List<LectureInfo> addLecture(List<LectureSaveDto> saveDtoList);
 
-  void updateLecture(String code, List<LectureEditDto> lectures);
+  List<LectureEditDto> updateLecture(String code, List<LectureEditDto> lectures);
 
   void deleteLecture(String code);
 
