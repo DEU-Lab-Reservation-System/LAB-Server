@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class UserIdCheck {
 
     // 6자리 이상
-    @Pattern(regexp = "^[a-zA-Z0-9]{6,}$", message = "아이디는 영문, 숫자 중 6자리로 구성되어야 합니다.")
+    @Pattern(regexp = "^[a-zA-Z0-9]{6,}$", message = "아이디는 영문, 숫자 중 6자리 이상으로 구성되어야 합니다.")
     @ApiModelProperty(value = "중복 확인하고자 하는 아이디")
     private String userId;
 }

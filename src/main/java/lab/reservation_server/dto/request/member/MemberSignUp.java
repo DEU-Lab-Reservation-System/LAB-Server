@@ -19,8 +19,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberSignUp {
 
-    @NotBlank(message = "학번을 넣어주세요, 공백 X")
-    @ApiModelProperty(value = "학생의 학번")
+    //@NotBlank(message = "학번을 넣어주세요, 공백 X")
+    @Pattern(regexp = "^[a-zA-Z0-9]{6,}$", message = "아이디는 영문 혹은 숫자로 6자리 이상으로 구성되어야 합니다.")
+    @ApiModelProperty(value = "학생의 학번, 아이디는 영문 혹은 숫자로 6자리 이상으로 구성되어야 합니다.")
     private String userId;
 
     @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
