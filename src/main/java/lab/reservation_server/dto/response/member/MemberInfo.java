@@ -22,6 +22,8 @@ public class MemberInfo {
     private String name;
     private String email;
 
+    private String major;
+
     private String phoneNum;
     private String role;
 
@@ -35,6 +37,7 @@ public class MemberInfo {
       this.userId = saved.getUserId();
       this.password = saved.getPassword();
       this.name = saved.getName();
+      this.major = saved.getMajor();
       this.email = saved.getEmail();
       this.phoneNum = saved.getPhoneNum();
       this.role = saved.getRole().getAuthority();

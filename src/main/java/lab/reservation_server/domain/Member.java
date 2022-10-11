@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import lab.reservation_server.domain.enums.Role;
 import lombok.Builder;
 import lombok.Getter;
@@ -68,6 +69,10 @@ public class Member extends BaseTime {
     @Column(unique = true, nullable = false)
     private String phoneNum;
 
+    // default column name is "a"
+    @Column(nullable = false)
+    private String major;
+
     /**
      * 학생의 권한
      */
@@ -86,6 +91,11 @@ public class Member extends BaseTime {
      */
     @Column(nullable = false)
     private Boolean isAuth;
+
+    @PrePersist
+    public void prePersist() {
+        this.major = "컴퓨터소프트웨어공학과";
+    }
 
     @Builder
     public Member(String userId, String password, String name, String email, String phoneNum, Role role, String deviceToken, Boolean isAuth) {
