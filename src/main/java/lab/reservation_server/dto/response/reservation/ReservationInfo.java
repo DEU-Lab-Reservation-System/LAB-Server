@@ -6,6 +6,9 @@ import lab.reservation_server.domain.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 오늘의 예약 정보 반환할때 사용하는 response
+ */
 @Getter
 @AllArgsConstructor
 public class ReservationInfo {

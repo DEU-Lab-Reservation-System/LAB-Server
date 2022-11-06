@@ -98,4 +98,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * AlreadyBookedException 이미 예약된 좌석인 경우
+     */
+    @ExceptionHandler(AlreadyBookedException.class)
+    public ResponseEntity<DefaultMessageResponse> handle(AlreadyBookedException ex) {
+
+        DefaultMessageResponse response = DefaultMessageResponse.of(ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    /**
+     * FullOfCapacityException 좌석이 꽉 찬 경우
+     */
+    @ExceptionHandler(FullOfCapacityException.class)
+    public ResponseEntity<DefaultMessageResponse> handle(FullOfCapacityException ex) {
+
+        DefaultMessageResponse response = DefaultMessageResponse.of(ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
 }

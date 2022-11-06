@@ -32,4 +32,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                                                                 @Param("startTime") LocalDateTime startTime,
                                                                 @Param("endTime") LocalDateTime endTime,
                                                                 @Param("today") java.sql.Date today);
+
+  // countByLabAndStartTimeBetweenEndTime
+  @Query("select count(r) from Reservation r where r.lab =:lab and r.endTime > :startTime and r.startTime < :endTime")
+  Integer countByLabAndStartTimeBetweenEndTime(@Param("lab") Lab lab, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
 }
