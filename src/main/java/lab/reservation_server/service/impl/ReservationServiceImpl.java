@@ -140,20 +140,21 @@ public class ReservationServiceImpl implements ReservationService {
         // 이용하고자 하는 강의실 데이터 조회
         Lab lab = labService.findLabWithRoomNumber(book.getRoomNum());
 
+        // book의 예약 시작 시간이 16시 30분 전, 16시 30분 이후로 나누어서 예약을 진행한다.
+        boolean beforeTime = checkIfBookStartBeforeTime(book);
+
         // 팀 인원이 현재 강의실 인원보다 많으면 예약 불가
         checkIfTeamSizeIsBiggerThanCapacity(book,lab);
 
-        // 해당 사용자가 중복된 예약은 아닌지 확인한다.
-        // 해당 메소드를 지나쳤다는 말은 중복된 예약이 아니라는 것을 의미한다.
-        checkIfBookedTwice(member);
+      // 해당 사용자가 중복된 예약은 아닌지 확인한다.
+      // 해당 메소드를 지나쳤다는 말은 중복된 예약이 아니라는 것을 의미한다.
+      checkIfBookedTwice(member,beforeTime);
 
-        // 특정 강의실, 특정 시간대, 특정 자리에 이미 예약한 좌석이 있는지 확인
-        // 해당 메소드는 16시 30분 전에 신청하든, 그 이후에 신청을 하든 우선 자리가 있는지 고려 해야하는 상황이다.
-        // 승인에 여부 없이 좌석을 확인해야 한다. 16시 반 전에 신청한 경우면 true
-        checkIfSeatAvailable(book,lab);
+      // 특정 강의실, 특정 시간대, 특정 자리에 이미 예약한 좌석이 있는지 확인
+      // 해당 메소드는 16시 30분 전에 신청하든, 그 이후에 신청을 하든 우선 자리가 있는지 고려 해야하는 상황이다.
+      // 승인에 여부 없이 좌석을 확인해야 한다. 16시 반 전에 신청한 경우면 true
+      checkIfSeatAvailable(book,lab);
 
-        // book의 예약 시작 시간이 16시 30분 전, 16시 30분 이후로 나누어서 예약을 진행한다.
-        boolean beforeTime = checkIfBookStartBeforeTime(book);
 
         // 예약 시작 시간이 16시 30분 전이라면
         Reservation reservation = null;
@@ -167,6 +168,8 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         // todo : 예약 완료 후, 방장 업데이트 필요
+        // 현재 예약 목록에서 방장이 없다면 방장을 업데이트 한다.
+        // 현재 시간기점으로 이용중인 사용자 중에서 가장 오랫동안 있는 사람...
 
         // 예약 완료 정보 반환
         return new BookInfo(reservation,lab,member);
@@ -199,15 +202,33 @@ public class ReservationServiceImpl implements ReservationService {
     /**
      * 해당 사용자가 중복된 예약은 없는지 확인
      */
-    private void checkIfBookedTwice(Member member) {
+    private void checkIfBookedTwice(Member member, Boolean permission) {
+
+      // 예약 시작 시간이 16시 30분 전이라면
+      if(permission){
+        reservationRepository.findApprovedReservationByMemberId(member.getId(),true).map(ReservationInfo::toCurrentReservation)
+            .ifPresent(reservationInfo -> {
+              log.warn("중복 예약 불가");
+              throw new AlreadyBookedException("17전에 이미 예약된 내역이 있습니다. 중복된 예약은 불가합니다.");
+            });
+      }else{
+        reservationRepository.findApprovedReservationByMemberId(member.getId(),false).map(ReservationInfo::toCurrentReservation)
+            .ifPresent(reservationInfo -> {
+              log.warn("중복 예약 불가");
+              throw new AlreadyBookedException("17시 이후로 이미 예약된 내역이 있습니다. 중복된 예약은 불가합니다.");
+            });
+      }
+
+
+
       // 해당 사용자가 중복된 예약은 아닌지 확인한다.
       // 예약한 적이 없거나, 예약한 적이 있지만, 예약한 시간이 지났다면 null로 나와서 예약 가능
       // 하지만 예약한 적이 있고, 예약한 시간이 지나지 않았다면 예외를 발생시킨다. (중복 예약 불가)
-      reservationRepository.findReservationByMemberId(member.getId()).map(ReservationInfo::toCurrentReservation)
-            .ifPresent(reservationInfo -> {
-                log.warn("중복 예약 불가");
-                throw new AlreadyBookedException("이미 예약된 내역이 있습니다. 중복된 예약은 불가합니다.");
-            });
+//      reservationRepository.findReservationByMemberId(member.getId()).map(ReservationInfo::toCurrentReservation)
+//            .ifPresent(reservationInfo -> {
+//                log.warn("중복 예약 불가");
+//                throw new AlreadyBookedException("이미 예약된 내역이 있습니다. 중복된 예약은 불가합니다.");
+//            });
     }
 
     /**
