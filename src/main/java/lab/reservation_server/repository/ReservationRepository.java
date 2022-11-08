@@ -17,6 +17,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
   @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where m.id = :memberId order by r.endTime desc")
   Optional<List<Reservation>> findReservationByMemberId(@Param("memberId") Long memberId);
 
+  /**
+   * 특정 사용자 예약 목록 중에서 ture, false 예약 내역 중에서 제일 최근내역을 가져온다.
+   */
   @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where m.id = :memberId and r.permission = :permission order by r.endTime desc")
   Optional<List<Reservation>> findApprovedReservationByMemberId(@Param("memberId") Long memberId, @Param("permission") Boolean permission);
 
@@ -38,12 +41,24 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                                                                 @Param("endTime") LocalDateTime endTime,
                                                                 @Param("today") java.sql.Date today);
 
-  // countByLabAndStartTimeBetweenEndTime
+
+
+  /**
+   * 특정 시간대에 이용중인 예약 내역의 개수를 반환한다.
+   */
   @Query("select count(r) from Reservation r where r.lab =:lab and r.endTime > :startTime and r.startTime < :endTime")
   Integer countByLabAndStartTimeBetweenEndTime(@Param("lab") Lab lab, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
 
 
-  // select reservation which is false permission and roomNumber join with lab
+  /**
+   * 오늘 날짜 기준으로 특정 강의실의 17시 이후에 대한 예약 내역 개수를 반환한다.
+   */
     @Query("select count(r) from Reservation r join r.lab l where r.permission = false and l.roomNumber = :roomNumber and Date(r.createdDate) = :today")
     int countCurrentCapacity(@Param("roomNumber") String roomNumber,@Param("today") java.sql.Date today);
+
+  /**
+   * 오늘 날짜 기준으로, 특정 강의실에 따라, permission에 따라 Reservation을 반환 하는데 가장 늦게 끝나는 예약 순으로 정렬 후 반환한다.
+   */
+    @Query("select r from Reservation r join fetch r.lab l join fetch r.member m where r.lab = :lab and Date(r.createdDate) = :today and r.permission = :permission order by r.endTime desc")
+    Optional<List<Reservation>> findReservationWithPermissionByLabId(@Param("lab") Lab lab,@Param("today") java.sql.Date today,@Param("permission") boolean permission);
 }

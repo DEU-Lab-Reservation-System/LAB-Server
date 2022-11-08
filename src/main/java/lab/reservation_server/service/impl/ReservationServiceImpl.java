@@ -143,63 +143,35 @@ public class ReservationServiceImpl implements ReservationService {
         // book의 예약 시작 시간이 16시 30분 전, 16시 30분 이후로 나누어서 예약을 진행한다.
         boolean beforeTime = checkIfBookStartBeforeTime(book);
 
-        // todo : 예약하고자 하는 시간에서 수업이 있는지 없는지 판단해야 한다. 이미 검증을 했지만 최종적으로 한번더 판단하고자 한다. -> OK
-        // todo : if 분기를 통해 원래 17시 이후에는 원래 수업이 없지만 혹시나 모를 수업에 대비해서 수업이 있는지 검증을 한다. -> OK
         // 실습실 정보, 예약 시작 시간, 예약 종료 시간, 예약하고자 하는 날짜를 통해서 판단해야 한다.
         lectureService.checkLectureBetweenTime(lab, book.getStartTime().toLocalTime(), book.getEndTime().toLocalTime());
 
         // 팀 인원이 현재 강의실 인원보다 많으면 예약 불가
         checkIfTeamSizeIsBiggerThanCapacity(book,lab);
 
-      // 해당 사용자가 중복된 예약은 아닌지 확인한다.
-      // 해당 메소드를 지나쳤다는 말은 중복된 예약이 아니라는 것을 의미한다.
-      checkIfBookedTwice(member,beforeTime);
+        // 해당 사용자가 중복된 예약은 아닌지 확인한다.
+        // 해당 메소드를 지나쳤다는 말은 중복된 예약이 아니라는 것을 의미한다.
+        checkIfBookedTwice(member,beforeTime);
 
-      // 특정 강의실, 특정 시간대, 특정 자리에 이미 예약한 좌석이 있는지 확인
-      // 해당 메소드는 16시 30분 전에 신청하든, 그 이후에 신청을 하든 우선 자리가 있는지 고려 해야하는 상황이다.
-      // 승인에 여부 없이 좌석을 확인해야 한다. 16시 반 전에 신청한 경우면 true
-      checkIfSeatAvailable(book,lab);
-
+        // 특정 강의실, 특정 시간대, 특정 자리에 이미 예약한 좌석이 있는지 확인
+        // 해당 메소드는 16시 30분 전에 신청하든, 그 이후에 신청을 하든 우선 자리가 있는지 고려 해야하는 상황이다.
+        // 승인에 여부 없이 좌석을 확인해야 한다.
+        checkIfSeatAvailable(book,lab);
 
         // 예약 시작 시간이 16시 30분 전이라면
         Reservation reservation = null;
         if(beforeTime){
             // 조교의 승인 필요 없이 바로 승인이 되어 예약이 이루어진다.
             reservation =reservationRepository.save(book.toApprovedReservation(member,lab));
+
         }else{
-            // 예약 시작 시간이 16시 30분 이후라면
-            // 조교의 승인이 필요하다.
-
-            // book의 roomNum이 우선 911인지 확인한다.
-            // 예약 목록 false -> 911-> 915,916,918 순서대로 사람이 들어가야 한다.
+            // book의 roomNum이 우선 순위에 맞는 강의실로 선택했는지 확인한다.
             defaultNewVersionRoom.checkIfRoomIsFull(book);
-
+            // 예약 시작 시간이 16시 30분 이후라면 조교의 승인이 필요하다
             reservation = reservationRepository.save(book.toUnapprovedReservation(member,lab));
 
-
-
-
-
-
-
-
-            // todo : save 하는 과정에서 17시 이후에 대해서는 먼저 우선순위가 높은 강의실부터 열려야 한다.
-            // todo : 17시 이후의 예약은 언제든지 먼저 예약을 잡을 수 있다.
-            // todo : 따라서 순차적으로 17시 이후의 예약을 잡게 되면, 그 목록을 순차적으로 유지하면서 순회를 해야 한다.
-            // todo : 각각을 순회를 하면서 17 이후의 경우에 대해서 911 강의실을 먼저 요청하도록 한다.
-
-
-
-
+            labManagerService.updateLabManager(lab,book);
         }
-
-        // todo : 예약 완료 후, 방장 업데이트 필요
-        // 현재 예약 목록에서 방장이 없다면 방장을 업데이트 한다.
-        // 현재 시간기점으로 이용중인 사용자 중에서 가장 오랫동안 있는 사람...
-
-        // todo : 방장에 대해서는 17시 전, 후로 가장 마지막으로 이용하는 사용자에 대해서만 방장 권한을 부여하면 된다.
-
-        // todo : 방장을 업데이트 하고 나서는 반드시 해당 강의실 이용자에게 알림을 보내야 한다.
 
         // 예약 완료 정보 반환
         return new BookInfo(reservation,lab,member);
@@ -248,17 +220,6 @@ public class ReservationServiceImpl implements ReservationService {
               throw new AlreadyBookedException("17시 이후로 이미 예약된 내역이 있습니다. 중복된 예약은 불가합니다.");
             });
       }
-
-
-
-      // 해당 사용자가 중복된 예약은 아닌지 확인한다.
-      // 예약한 적이 없거나, 예약한 적이 있지만, 예약한 시간이 지났다면 null로 나와서 예약 가능
-      // 하지만 예약한 적이 있고, 예약한 시간이 지나지 않았다면 예외를 발생시킨다. (중복 예약 불가)
-//      reservationRepository.findReservationByMemberId(member.getId()).map(ReservationInfo::toCurrentReservation)
-//            .ifPresent(reservationInfo -> {
-//                log.warn("중복 예약 불가");
-//                throw new AlreadyBookedException("이미 예약된 내역이 있습니다. 중복된 예약은 불가합니다.");
-//            });
     }
 
     /**

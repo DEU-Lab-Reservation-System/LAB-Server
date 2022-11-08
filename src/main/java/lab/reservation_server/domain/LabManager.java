@@ -59,6 +59,13 @@ public class LabManager {
         this.createDate = LocalDate.now();
     }
 
+    public LabManager(Member member, Lab lab) {
+        this.member = member;
+        this.lab = lab;
+    }
 
 
+    public void updateMember(Member member) {
+        this.member = member;
+    }
 }
