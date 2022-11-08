@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lab.reservation_server.domain.Lab;
+import lab.reservation_server.domain.Member;
 import lab.reservation_server.domain.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -63,4 +64,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
    */
     @Query("select r from Reservation r join fetch r.lab l join fetch r.member m where r.lab = :lab and Date(r.createdDate) = :today and r.permission = :permission order by r.endTime desc")
     Optional<List<Reservation>> findReservationWithPermissionByLabId(@Param("lab") Lab lab,@Param("today") java.sql.Date today,@Param("permission") boolean permission);
+
+  /**
+   * 오늘 특정 사용자가 예약 한 모든 내역을 반환한다.
+   */
+    @Query("select r from Reservation r join fetch r.lab l where r.member = :member and Date(r.createdDate) = :today order by r.startTime asc")
+    Optional<List<Reservation>> findAllByMember(@Param("member") Member member , @Param("today") java.sql.Date today);
 }

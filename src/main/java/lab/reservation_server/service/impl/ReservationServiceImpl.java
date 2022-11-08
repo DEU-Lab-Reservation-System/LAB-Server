@@ -15,6 +15,7 @@ import lab.reservation_server.dto.response.labmanager.MemberSimpleInfo;
 import lab.reservation_server.dto.response.reservation.BookInfo;
 import lab.reservation_server.dto.response.reservation.CurrentReservation;
 import lab.reservation_server.dto.response.reservation.ReservationInfo;
+import lab.reservation_server.dto.response.reservation.ReservationInfos;
 import lab.reservation_server.exception.AlreadyBookedException;
 import lab.reservation_server.exception.BadRequestException;
 import lab.reservation_server.exception.FullOfCapacityException;
@@ -49,7 +50,7 @@ public class ReservationServiceImpl implements ReservationService {
      * member의 id를 통해서 <b>가장 최근의</b> 예약 정보를 가져온다.
      */
       @Override
-      public ReservationInfo getReservationFromMemberId(Long memberId) {
+      public ReservationInfo getCurrentReservationFromMemberId(Long memberId) {
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -180,6 +181,25 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     /**
+     * 사용자의 모든 예약 내역 가져오기
+     * @param userId 사용자 아이디
+     */
+    @Override
+    public ReservationInfos getAllReservationFromMemberId(String userId) {
+        Member member = memberRepository.findByUserId(userId)
+            .orElseThrow(() -> new BadRequestException("해당 사용자가 존재하지 않습니다."));
+
+        // convert to list of reservation info
+      ReservationInfos reservationInfos = new ReservationInfos();
+      reservationRepository.findAllByMember(member, Date.valueOf(LocalDate.now()))
+          .ifPresent(reservations -> reservationInfos.addReservationInfo(reservations,member));
+
+      return reservationInfos;
+
+
+    }
+
+  /**
      * 팀 인원이 열려 있는 강의실 남은 자리 수 보다 많을 때 예약불가 메세지 알려주기
      */
     private void checkIfTeamSizeIsBiggerThanCapacity(BookRequest book, Lab lab) {

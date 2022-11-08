@@ -62,7 +62,7 @@ public class MemberServiceImpl implements MemberService {
 
       // reservation service를 통해서 reservationInfo 가져오기
       ReservationInfo reservation =
-          reservationService.getReservationFromMemberId(memberFromDb.getId());
+          reservationService.getCurrentReservationFromMemberId(memberFromDb.getId());
 
 
       // return memberinfo

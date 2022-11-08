@@ -46,4 +46,16 @@ public class BookInfo {
         this.permission = reservation.getPermission();
     }
 
+    public BookInfo(Reservation reservation, Member member) {
+        this.id = reservation.getId();
+        this.name = member.getName();
+        this.userId = member.getUserId();
+        this.major = member.getMajor();
+        this.roomNumber = reservation.getLab().getRoomNumber();
+        this.seatNum = reservation.getSeatNum();
+        this.startTime = reservation.getStartTime().toString();
+        this.endTime = reservation.getEndTime().toString();
+        this.extensionTime = reservation.getExtensionTime().toString();
+        this.permission = reservation.getPermission();
+    }
 }
