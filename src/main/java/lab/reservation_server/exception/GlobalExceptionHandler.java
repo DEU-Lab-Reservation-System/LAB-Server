@@ -95,7 +95,7 @@ public class GlobalExceptionHandler {
 
         DefaultResponse response = DefaultResponse.of(HttpStatus.NO_CONTENT, ex.getMessage());
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.badRequest().body(response);
     }
 
     /**
