@@ -30,21 +30,21 @@ public class BookRequest {
      * 예약하고자 하는 강의실
      */
     @NotNull(message = "예약하고자 하는 강의실 번호를 반드시 입력해주세요")
-    @ApiModelProperty(value = "예약하고자 하는 강의실 번호")
+    @ApiModelProperty(value = "예약하고자 하는 강의실 번호 ex)911")
     private String roomNum;
 
     /**
      * 예약하고자 하는 시작 시간
      */
     @NotBlank(message = "예약하고자 하는 시작 시간을 반드시 입력해주세요")
-    @ApiModelProperty(value = "예약하고자 하는 시작 시간")
+    @ApiModelProperty(value = "예약하고자 하는 시작 시간 ex) 09:00")
     private String startTime;
 
     /**
      * 예약하고자 하는 종료 시간
      */
     @NotBlank(message = "예약하고자 하는 종료 시간을 반드시 입력해주세요")
-    @ApiModelProperty(value = "예약하고자 하는 종료 시간")
+    @ApiModelProperty(value = "예약하고자 하는 종료 시간 ex) 15:00")
     private String endTime;
 
     /**
