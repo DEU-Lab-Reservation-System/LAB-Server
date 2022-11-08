@@ -41,4 +41,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
   // countByLabAndStartTimeBetweenEndTime
   @Query("select count(r) from Reservation r where r.lab =:lab and r.endTime > :startTime and r.startTime < :endTime")
   Integer countByLabAndStartTimeBetweenEndTime(@Param("lab") Lab lab, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
+
+
+  // select reservation which is false permission and roomNumber join with lab
+    @Query("select count(r) from Reservation r join r.lab l where r.permission = false and l.roomNumber = :roomNumber and Date(r.createdDate) = :today")
+    int countCurrentCapacity(@Param("roomNumber") String roomNumber,@Param("today") java.sql.Date today);
 }

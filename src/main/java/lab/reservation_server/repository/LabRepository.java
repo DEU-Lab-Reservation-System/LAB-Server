@@ -19,4 +19,7 @@ public interface LabRepository extends JpaRepository<Lab, Long> {
     Optional<List<LectureInfoForLab>> findLecturesByLabRoomNumber(@Param("roomNum") String roomNumber);
 
     Optional<Lab> findByRoomNumber(String roomNumber);
+
+    @Query("select l.capacity from Lab l where l.roomNumber = :roomNum")
+    int findMaxCapacity(@Param("roomNum") String roomNum);
 }
