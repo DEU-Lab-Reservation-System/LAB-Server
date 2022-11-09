@@ -51,10 +51,12 @@ public class ReservationServiceImpl implements ReservationService {
       @Override
       public ReservationInfo getReservationFromMemberId(Long memberId) {
 
+        LocalDateTime now = LocalDateTime.now();
+
         // 값이 있으면, reservationInfo를 만들어서 반환, 없으면 null 반환
         // find first of list and conver to ReservationInfo
         ReservationInfo reservationInfo =
-            reservationRepository.findReservationByMemberId(memberId).map(ReservationInfo::toCurrentReservation)
+            reservationRepository.findReservationByMemberId(memberId,now).map(ReservationInfo::toCurrentReservation)
                 .orElse(null);
 
         return reservationInfo;

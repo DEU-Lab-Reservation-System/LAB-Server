@@ -12,10 +12,12 @@ import org.springframework.data.repository.query.Param;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
   /**
-   * 오늘 날짜 기준, Member가 가장 최근에 예약한 Reservation을 가져온다.
+   * 오늘 날짜 기준, Member가 가장 최근에 예약한 이상적인 Reservation을 가져온다.
    */
-  @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where m.id = :memberId order by r.endTime desc")
-  Optional<List<Reservation>> findReservationByMemberId(@Param("memberId") Long memberId);
+//  @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where m.id = :memberId order by r.endTime desc")
+  @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where m.id = :memberId and r.endTime > :now order by r.startTime asc")
+  Optional<List<Reservation>> findReservationByMemberId(@Param("memberId") Long memberId,
+                                                        @Param("now") LocalDateTime now);
 
   /**
    * 특정 사용자 예약 목록 중에서 ture, false 예약 내역 중에서 제일 최근내역을 가져온다.
