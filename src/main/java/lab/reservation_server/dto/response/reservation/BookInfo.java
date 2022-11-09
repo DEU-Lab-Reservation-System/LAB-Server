@@ -58,4 +58,17 @@ public class BookInfo {
         this.extensionTime = reservation.getExtensionTime().toString();
         this.permission = reservation.getPermission();
     }
+
+    public BookInfo(Reservation reservation) {
+        this.id = reservation.getId();
+        this.name = reservation.getMember().getName();
+        this.userId = reservation.getMember().getUserId();
+        this.major = reservation.getMember().getMajor();
+        this.roomNumber = reservation.getLab().getRoomNumber();
+        this.seatNum = reservation.getSeatNum();
+        this.startTime = reservation.getStartTime().toString();
+        this.endTime = reservation.getEndTime().toString();
+        this.extensionTime = reservation.getExtensionTime().toString();
+        this.permission = reservation.getPermission();
+    }
 }

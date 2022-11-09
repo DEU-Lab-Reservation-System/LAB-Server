@@ -23,4 +23,10 @@ public class ReservationInfos {
             reservations.add(new BookInfo(res,member));
         }
     }
+
+    public void addReservationInfo(List<Reservation> reservation) {
+        for (Reservation res : reservation) {
+            reservations.add(new BookInfo(res));
+        }
+    }
 }

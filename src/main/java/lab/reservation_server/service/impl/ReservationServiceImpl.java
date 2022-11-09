@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Member;
@@ -197,6 +198,22 @@ public class ReservationServiceImpl implements ReservationService {
       return reservationInfos;
 
 
+    }
+
+    /**
+     * 조교는 17시 이후에 사용하고자 하는 미승인된 예약 내역을 조회한다.
+     */
+    @Override
+    public ReservationInfos getUnauthorizedReservation() {
+      // 오늘 기점으로 17시 이후에 사용하고자 하는 미승인된 예약 내역을 조회한다.
+      Optional<List<Reservation>> unauthorizedReservations =
+          reservationRepository.findReservationsByDateAndPermission(Date.valueOf(LocalDate.now()),
+              false);
+
+      ReservationInfos reservationInfos = new ReservationInfos();
+      unauthorizedReservations.ifPresent(reservations -> reservationInfos.addReservationInfo(reservations));
+
+      return reservationInfos;
     }
 
   /**

@@ -1,5 +1,6 @@
 package lab.reservation_server.repository;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -70,4 +71,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
    */
     @Query("select r from Reservation r join fetch r.lab l where r.member = :member and Date(r.createdDate) = :today order by r.startTime asc")
     Optional<List<Reservation>> findAllByMember(@Param("member") Member member , @Param("today") java.sql.Date today);
+
+    /**
+     * 오늘 예약한 목록 중에서 permission이 true 혹은 false에 따른 예약 내역 전체를 반환한다.
+     */
+    @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where Date(r.createdDate) = :today and r.permission = :permission order by r.startTime asc")
+    Optional<List<Reservation>> findReservationsByDateAndPermission(@Param("today") java.sql.Date today, @Param("permission") boolean permission);
 }

@@ -37,6 +37,9 @@ public class ReservationController {
        return ResponseEntity.ok(bookInfo);
     }
 
+    /**
+     * 사용자가 예약한 내역을 모드 조회할 수 있다.
+     */
     @GetMapping("/api/reservations/{userId}")
     @ApiImplicitParam(name = "userId" , value = "사용자 아이디" , required = true)
     @ApiOperation(value="내 예약 조회" , notes = "내 예약 정보를 모두 조회할 수 있다.")
@@ -45,7 +48,15 @@ public class ReservationController {
       return ResponseEntity.ok(infos);
     }
 
-
+    /**
+     * 조교가 17시 이후에 사용하고자 하는 미승인 예약 내역을 조회할 수 있다.
+     */
+    @GetMapping("/api/reservations/unauthorized")
+    @ApiOperation(value="17시 이후 예약 조회" , notes = "조교는 17시 이후 승인되지 않은 예약 내역을 조회할 수 있다.")
+    public ResponseEntity<ReservationInfos> getUnauthorizedReservation() {
+      ReservationInfos infos = reservationService.getUnauthorizedReservation();
+      return ResponseEntity.ok(infos);
+    }
 
 
 

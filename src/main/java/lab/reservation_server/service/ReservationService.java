@@ -18,4 +18,6 @@ public interface ReservationService {
   BookInfo doReservation(BookRequest book);
 
   ReservationInfos getAllReservationFromMemberId(String userId);
+
+  ReservationInfos getUnauthorizedReservation();
 }
