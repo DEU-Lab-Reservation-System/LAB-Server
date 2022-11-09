@@ -4,10 +4,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
-import lab.reservation_server.dto.request.member.UserId;
 import lab.reservation_server.dto.request.reservation.BookRequest;
+import lab.reservation_server.dto.request.reservation.RoomAndTime;
 import lab.reservation_server.dto.response.reservation.BookInfo;
 import lab.reservation_server.dto.response.reservation.ReservationInfos;
+import lab.reservation_server.dto.response.reservation.ReservationInfosWithManager;
 import lab.reservation_server.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +59,17 @@ public class ReservationController {
       return ResponseEntity.ok(infos);
     }
 
+
+    /**
+     * 특정 강의실, 특정 시간에 승인된 예약 현황을 확인할 수 있다.
+     */
+    @GetMapping("/api/reservations/list")
+    @ApiImplicitParam(name = "roomNumber" , value = "강의실 번호" , required = true)
+    @ApiOperation(value="특정 강의실 승인된 예약 현황(사용자) 조회" , notes = "특정 강의실, 특정 시간에 승인된 예약 현황(사용자)을 확인할 수 있다.")
+    public ResponseEntity<ReservationInfosWithManager> getReservationFromRoomNumber(@RequestBody @Valid RoomAndTime roomAndTime) {
+      ReservationInfosWithManager infos = reservationService.getReservationFromRoomNumber(roomAndTime);
+      return ResponseEntity.ok(infos);
+    }
 
 
 }

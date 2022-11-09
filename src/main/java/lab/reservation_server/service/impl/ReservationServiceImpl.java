@@ -4,6 +4,7 @@ package lab.reservation_server.service.impl;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,12 +12,14 @@ import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Member;
 import lab.reservation_server.domain.Reservation;
 import lab.reservation_server.dto.request.reservation.BookRequest;
+import lab.reservation_server.dto.request.reservation.RoomAndTime;
 import lab.reservation_server.dto.request.reservation.TimeStartToEnd;
 import lab.reservation_server.dto.response.labmanager.MemberSimpleInfo;
 import lab.reservation_server.dto.response.reservation.BookInfo;
 import lab.reservation_server.dto.response.reservation.CurrentReservation;
 import lab.reservation_server.dto.response.reservation.ReservationInfo;
 import lab.reservation_server.dto.response.reservation.ReservationInfos;
+import lab.reservation_server.dto.response.reservation.ReservationInfosWithManager;
 import lab.reservation_server.exception.AlreadyBookedException;
 import lab.reservation_server.exception.BadRequestException;
 import lab.reservation_server.exception.FullOfCapacityException;
@@ -216,6 +219,30 @@ public class ReservationServiceImpl implements ReservationService {
       return reservationInfos;
     }
 
+    /**
+     * 특정 강의실, 특정 시간대에서 승인된 예약 현황(사용자) ,permission이 true인 결과를 조회한다.
+     */
+    @Override
+    public ReservationInfosWithManager getReservationFromRoomNumber(RoomAndTime roomAndTime) {
+
+      // 확인하고자 하는 강의실
+      Lab lab = labService.findLabWithRoomNumber(roomAndTime.getRoomNum());
+
+      ReservationInfosWithManager reservationInfosWithManager = new ReservationInfosWithManager();
+
+      reservationRepository.findCurrentReservationWithPermission(lab,roomAndTime.getStartLocalDateTime(),
+              roomAndTime.getEndLocalDateTime(),true)
+          .ifPresent(reservationInfosWithManager::addReservationInfo);
+
+      // 검색하고자 하는데, 종료 시간이 17시 이후인 경우는 방정 데이터도 함께 response dto에 실어서 보낸다.
+      if(roomAndTime.getEndLocalTime().isAfter(LocalTime.of(17,0))){
+        MemberSimpleInfo memberSimpleInfo = labManagerService.searchMemberByLabId(lab.getId()); // 방장 기존 정보 반환
+        reservationInfosWithManager.setManager(memberSimpleInfo); // 매니저로 지정
+      }
+
+      return reservationInfosWithManager;
+    }
+
   /**
      * 팀 인원이 열려 있는 강의실 남은 자리 수 보다 많을 때 예약불가 메세지 알려주기
      */
@@ -247,13 +274,15 @@ public class ReservationServiceImpl implements ReservationService {
 
       // 예약 시작 시간이 16시 30분 전이라면
       if(permission){
-        reservationRepository.findApprovedReservationByMemberId(member.getId(),true).map(ReservationInfo::toCurrentReservation)
+        reservationRepository.findApprovedReservationByMemberId(member.getId(),true, java.sql.Date.valueOf(LocalDate.now()))
+            .map(ReservationInfo::toCurrentReservation)
             .ifPresent(reservationInfo -> {
               log.warn("중복 예약 불가");
               throw new AlreadyBookedException("17전에 이미 예약된 내역이 있습니다. 중복된 예약은 불가합니다.");
             });
       }else{
-        reservationRepository.findApprovedReservationByMemberId(member.getId(),false).map(ReservationInfo::toCurrentReservation)
+        reservationRepository.findApprovedReservationByMemberId(member.getId(),false, java.sql.Date.valueOf(LocalDate.now()))
+            .map(ReservationInfo::toCurrentReservation)
             .ifPresent(reservationInfo -> {
               log.warn("중복 예약 불가");
               throw new AlreadyBookedException("17시 이후로 이미 예약된 내역이 있습니다. 중복된 예약은 불가합니다.");

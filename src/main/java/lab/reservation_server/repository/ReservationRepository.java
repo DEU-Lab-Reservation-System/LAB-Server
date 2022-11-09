@@ -16,7 +16,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
   /**
    * 오늘 날짜 기준, Member가 가장 최근에 예약한 이상적인 Reservation을 가져온다.
    */
-//  @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where m.id = :memberId order by r.endTime desc")
   @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where m.id = :memberId and r.endTime > :now order by r.startTime asc")
   Optional<List<Reservation>> findReservationByMemberId(@Param("memberId") Long memberId,
                                                         @Param("now") LocalDateTime now);
@@ -24,16 +23,31 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
   /**
    * 특정 사용자 예약 목록 중에서 ture, false 예약 내역 중에서 제일 최근내역을 가져온다.
    */
-  @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where m.id = :memberId and r.permission = :permission order by r.endTime desc")
-  Optional<List<Reservation>> findApprovedReservationByMemberId(@Param("memberId") Long memberId, @Param("permission") Boolean permission);
+  @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where m.id = :memberId and r.permission = :permission and Date(r.createdDate) = :today order by r.endTime desc")
+  Optional<List<Reservation>> findApprovedReservationByMemberId(@Param("memberId") Long memberId,
+                                                                @Param("permission") Boolean permission,
+                                                                @Param("today") Date today);
 
 
 
   /**
    * 해당 강의실에 현재 시간에 이용중인 예약 내역을 반환한다.
+   * 사용자 화면 기준으로 사용되는 쿼리, 왜냐하면 사용자 입장에서는 오후반 신청할때 아직 미승인 예약에 대해서도 알아야지 해당 좌석을 피해서
+   * 예약을 진행해야 하기 떄문이다.
    */
   @Query("select r from Reservation r where r.lab =:lab and r.endTime > :now and r.startTime < :now")
   Optional<List<Reservation>> findCurrentReservation(@Param("lab") Lab lab,@Param("now") LocalDateTime now);
+
+  /**
+   * 조교 화면 기준으로 사용되는 쿼리, 조교 입장에서 특정 강의실,
+   * 특정 시간대에 조회하는 경우는 permission이 true인 경우의 승인된 예약 내역을 조회한다.
+   * todo : reservation 데이터가 그대로 유지된다는 가정하게 데이터의 무결성이 꺠지지 않는지 확인 필요 (오늘 날짜 기준으로 파라미터가 추가되어야 하지 않을까)
+   */
+  @Query("select r from Reservation r where r.lab =:lab and r.startTime >= :startTime and r.endTime <= :endTime and r.permission = :permission order by r.startTime asc")
+  Optional<List<Reservation>> findCurrentReservationWithPermission(@Param("lab") Lab lab,
+                                                                   @Param("startTime") LocalDateTime startTime,
+                                                                   @Param("endTime") LocalDateTime endTime,
+                                                                   @Param("permission") boolean permission);
 
   /**
    * 특정 강의실, 특정 시간대 범위에 이용중인 reservation을 반환한다. (오늘 기준으로 검색, 스케줄러를 통해 일주일 단위로 삭제 해도
