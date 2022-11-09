@@ -65,7 +65,7 @@ public class ReservationServiceImpl implements ReservationService {
       }
 
       /**
-       * 현재 시간 기준으로 해당 강의실에 강의가 있는지 확인, 없으면 현 사용중인 좌석 반환
+       * 현재 시간 기준으로 해당 강의실에 강의가 있는지 확인, 없으면 현 사용중인 좌석 반환 (사용자 화면 기준 - 메인 화면)
        */
       @Override
       public CurrentReservation checkReservation(String roomNumber) {
@@ -88,7 +88,7 @@ public class ReservationServiceImpl implements ReservationService {
             .map(Reservation::getSeatNum)
             .collect(Collectors.toList());
 
-        return new CurrentReservation(seatNums, memberSimpleInfo);
+        return new CurrentReservation(seatNums, memberSimpleInfo,false);
       }
 
       /**
@@ -125,7 +125,7 @@ public class ReservationServiceImpl implements ReservationService {
           .map(Reservation::getSeatNum)
           .collect(Collectors.toList());
 
-      return new CurrentReservation(seatNums, memberSimpleInfo);
+      return new CurrentReservation(seatNums, memberSimpleInfo,false);
     }
 
     /**
