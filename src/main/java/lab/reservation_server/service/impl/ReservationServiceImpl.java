@@ -12,6 +12,7 @@ import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Member;
 import lab.reservation_server.domain.Reservation;
 import lab.reservation_server.dto.request.reservation.BookRequest;
+import lab.reservation_server.dto.request.reservation.ExtendRequest;
 import lab.reservation_server.dto.request.reservation.PermissionUpdate;
 import lab.reservation_server.dto.request.reservation.RoomAndTime;
 import lab.reservation_server.dto.request.reservation.TimeStartToEnd;
@@ -24,6 +25,7 @@ import lab.reservation_server.dto.response.reservation.ReservationInfosWithManag
 import lab.reservation_server.exception.AlreadyBookedException;
 import lab.reservation_server.exception.BadRequestException;
 import lab.reservation_server.exception.FullOfCapacityException;
+import lab.reservation_server.exception.LecturePresentException;
 import lab.reservation_server.repository.MemberRepository;
 import lab.reservation_server.repository.ReservationRepository;
 import lab.reservation_server.service.LabManagerService;
@@ -267,7 +269,67 @@ public class ReservationServiceImpl implements ReservationService {
         reservationRepository.updatePermission(permissionUpdate.getReservationIds(),false);
       }
 
-      return "업데이트 완료";
+      return "승인 상태 업데이트 완료";
+    }
+
+    /**
+     * 예약을 연장한다. 프론트에선 아직 미승인에 대해서는 연장이라는 버튼이 뜨면 안된다.
+     */
+    @Override
+    @Transactional
+    public BookInfo extendReservation(ExtendRequest extendRequest) {
+
+      // reservation id를 통해서 reservation을 우선 조회한다.
+      Reservation reservation = reservationRepository.findById(extendRequest.getReservationId())
+          .orElseThrow(() -> new BadRequestException("연장하고자 하는 예약이 존재하지 않습니다."));
+
+      Lab lab = reservation.getLab(); // 이용하고 있는 실습실
+
+      LocalDateTime extensionTime = reservation.getExtensionTime(); // 연장 가능 시간
+      LocalDateTime endTime = reservation.getEndTime(); // 종료 시간
+
+      LocalDateTime now = LocalDateTime.now(); // 현재 시간
+
+      // 연장을 요청한 시간이 연장 가능 시간과 종료 시간에 위치하는지 확인한다. 그렇지 않으면 exception 반환
+      if(now.isBefore(extensionTime) || now.isAfter(endTime)){
+          throw new BadRequestException("연장 가능 시간이 아닙니다.");
+      }
+
+        // 만약, 현재 시간 기준으로 연장이 가능하며, 17시 전에 연장을 요청하려는 경우,
+        if(now.isBefore(LocalTime.of(17,0).atDate(now.toLocalDate()))){
+            // 연장을 1시간 했을때, 맨처음 종료시간과 연장된 종료시간까지 수업이 없는지 확인한다. 만약 수업이 있다면 exception 반환 (연장 후 이용가능한 시간까지 수업이 존재합니다.)
+            LocalDateTime extendedEndTime = endTime.plusHours(1);
+            try {
+              lectureService.checkLectureBetweenTime(lab, endTime.toLocalTime(),
+                  extendedEndTime.toLocalTime());
+            } catch (LecturePresentException e) {
+              throw new BadRequestException("연장 후 이용가능한 시간까지 수업이 존재합니다.");
+            }
+
+            // 연장을 1시간 했을때, 기존 종료 시간과 연장된 종료시간까지 다른 누군가가 이미 예약을 했더라면, exception 반환 (이미 사용중인 자리라서 연장이 불가능합니다.)
+            checkSeatAvailable(lab, endTime, extendedEndTime, reservation.getSeatNum());
+
+            // 연장을 1시간 했을때, 그 종료시간이 17시 이후가 넘어가면, 조교의 승인이 거쳐야 하기 때문에 무조건 exception 반환
+            // (연장 후 종료시간이 17시 이후이므로, 조교의 승인이 필요한 절차 입니다. 17시 이후로 사용하실 경우, 새롭게 예약을 진행해주세요)
+            if(extendedEndTime.isAfter(LocalTime.of(17,0).atDate(extendedEndTime.toLocalDate()))){
+                throw new BadRequestException("연장 후 종료 시간이 17시 이후이므로, 조교의 승인이 필요한 절차입니다. 17시 이후로 사용하실 경우, 새롭게 예약을 진행해주세요");
+            }
+
+            // 모든 조건을 피했을때 연장으 최종적으로 완성이 된다.
+            reservation.updateEndTime(extendedEndTime);
+
+            // 17시 이전의 예역은 방장을 업데이트할 필요가 없다.
+
+        }else{
+            // 만약 17시 이후로써 예약을 연장하려는 경우
+            // 뒤에 수업도 없고, 다른 사람으로 인한 예약이 존재하지 않기 때문에 바로 바로 연장이 가능하다.
+            reservation.updateEndTime(endTime.plusHours(1));
+
+            // 연장을 하면 추가적으로 상황에 맞게 방장을 업데이트 해줘야 한다.
+            labManagerService.updateLabManager(lab, List.of(reservation.getId()));
+        }
+
+      return new BookInfo(reservation);
     }
 
   /**
@@ -305,7 +367,7 @@ public class ReservationServiceImpl implements ReservationService {
             .map(ReservationInfo::toCurrentReservation)
             .ifPresent(reservationInfo -> {
               log.warn("중복 예약 불가");
-              throw new AlreadyBookedException("17전에 이미 예약된 내역이 있습니다. 중복된 예약은 불가합니다.");
+              throw new AlreadyBookedException("17시 전에 이미 예약된 내역이 있습니다. 중복된 예약은 불가합니다.");
             });
       }else{
         reservationRepository.findApprovedReservationByMemberId(member.getId(),false, java.sql.Date.valueOf(LocalDate.now()))
@@ -323,17 +385,23 @@ public class ReservationServiceImpl implements ReservationService {
     private void checkIfSeatAvailable(BookRequest book, Lab lab) {
 
       // 예약 하고자 하는 좌석이 이미 예약된 좌석인지 확인
-      reservationRepository
-          .findCurrentReservationBetweenTime(lab, book.getStartTime(), book.getEndTime(), Date.valueOf(LocalDate.now()))
-          .ifPresent(reservations ->
-              { List<String> seatNums = reservations.stream().map(Reservation::getSeatNum)
-                    .collect(Collectors.toList());
+      checkSeatAvailable(lab, book.getStartTime(), book.getEndTime(), book.getSeatNum());
 
-                  // 예약한 좌석이 있는지 확인
-                  if (seatNums.contains(book.getSeatNum())) {
-                      log.warn("이미 예약된 좌석입니다.");
-                      throw new AlreadyBookedException("이미 예약된 좌석입니다.");
-                  }
+    }
+
+    private void checkSeatAvailable(Lab lab, LocalDateTime startTime, LocalDateTime endTime, String seatNum ) {
+      // 예약 하고자 하는 좌석이 이미 예약된 좌석인지 확인
+      reservationRepository
+          .findCurrentReservationBetweenTime(lab,startTime,endTime, Date.valueOf(LocalDate.now()))
+          .ifPresent(reservations ->
+          { List<String> seatNums = reservations.stream().map(Reservation::getSeatNum)
+              .collect(Collectors.toList());
+
+            // 예약한 좌석이 있는지 확인
+            if (seatNums.contains(seatNum)) {
+              log.warn("이미 예약된 좌석입니다.");
+              throw new AlreadyBookedException("이미 예약된 좌석입니다.");
+            }
           });
     }
 

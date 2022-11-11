@@ -86,5 +86,8 @@ public class Reservation extends BaseTime {
     }
 
 
-
+    public void updateEndTime(LocalDateTime extendedEndTime) {
+        this.endTime = extendedEndTime;
+        this.extensionTime = extendedEndTime.minusMinutes(30);
+    }
 }

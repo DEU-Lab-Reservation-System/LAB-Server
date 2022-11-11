@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
 import lab.reservation_server.dto.request.reservation.BookRequest;
+import lab.reservation_server.dto.request.reservation.ExtendRequest;
 import lab.reservation_server.dto.request.reservation.PermissionUpdate;
 import lab.reservation_server.dto.request.reservation.RoomAndTime;
 import lab.reservation_server.dto.response.reservation.BookInfo;
@@ -79,6 +80,16 @@ public class ReservationController {
     public ResponseEntity<String> authorizeReservation(@RequestBody @Valid PermissionUpdate permissionUpdate) {
       String infos = reservationService.updatePermission(permissionUpdate);
       return ResponseEntity.ok(infos);
+    }
+
+    /**
+     * 예약 연장
+     */
+    @PostMapping("/api/reservations/extend")
+    @ApiOperation(value="예약 연장" , notes = "예약을 연장할 수 있다.")
+    public ResponseEntity<BookInfo> extendReservation(@RequestBody @Valid ExtendRequest extendRequest) {
+      BookInfo info = reservationService.extendReservation(extendRequest);
+      return ResponseEntity.ok(info);
     }
 
 

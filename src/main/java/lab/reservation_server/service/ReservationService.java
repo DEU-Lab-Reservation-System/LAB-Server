@@ -1,6 +1,7 @@
 package lab.reservation_server.service;
 
 import lab.reservation_server.dto.request.reservation.BookRequest;
+import lab.reservation_server.dto.request.reservation.ExtendRequest;
 import lab.reservation_server.dto.request.reservation.PermissionUpdate;
 import lab.reservation_server.dto.request.reservation.RoomAndTime;
 import lab.reservation_server.dto.request.reservation.TimeStartToEnd;
@@ -27,4 +28,6 @@ public interface ReservationService {
   ReservationInfosWithManager getReservationFromRoomNumber(RoomAndTime roomAndTime);
 
   String updatePermission(PermissionUpdate permissionUpdate);
+
+  BookInfo extendReservation(ExtendRequest extendRequest);
 }
