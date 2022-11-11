@@ -1,6 +1,7 @@
 package lab.reservation_server.service;
 
 import lab.reservation_server.dto.request.reservation.BookRequest;
+import lab.reservation_server.dto.request.reservation.PermissionUpdate;
 import lab.reservation_server.dto.request.reservation.RoomAndTime;
 import lab.reservation_server.dto.request.reservation.TimeStartToEnd;
 import lab.reservation_server.dto.response.reservation.BookInfo;
@@ -24,4 +25,6 @@ public interface ReservationService {
   ReservationInfos getUnauthorizedReservation();
 
   ReservationInfosWithManager getReservationFromRoomNumber(RoomAndTime roomAndTime);
+
+  String updatePermission(PermissionUpdate permissionUpdate);
 }

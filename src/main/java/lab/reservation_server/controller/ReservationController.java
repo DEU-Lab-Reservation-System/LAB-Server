@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
 import lab.reservation_server.dto.request.reservation.BookRequest;
+import lab.reservation_server.dto.request.reservation.PermissionUpdate;
 import lab.reservation_server.dto.request.reservation.RoomAndTime;
 import lab.reservation_server.dto.response.reservation.BookInfo;
 import lab.reservation_server.dto.response.reservation.ReservationInfos;
@@ -64,10 +65,19 @@ public class ReservationController {
      * 특정 강의실, 특정 시간에 승인된 예약 현황을 확인할 수 있다.
      */
     @GetMapping("/api/reservations/list")
-    @ApiImplicitParam(name = "roomNumber" , value = "강의실 번호" , required = true)
     @ApiOperation(value="특정 강의실 승인된 예약 현황(사용자) 조회" , notes = "특정 강의실, 특정 시간에 승인된 예약 현황(사용자)을 확인할 수 있다.")
     public ResponseEntity<ReservationInfosWithManager> getReservationFromRoomNumber(@RequestBody @Valid RoomAndTime roomAndTime) {
       ReservationInfosWithManager infos = reservationService.getReservationFromRoomNumber(roomAndTime);
+      return ResponseEntity.ok(infos);
+    }
+
+    /**
+     * 미승인된 예약 내역에 대해서 승인 혹은 거절을 할 수 있다.
+     */
+    @PostMapping("/api/reservations/authorize")
+    @ApiOperation(value="예약 승인" , notes = "미승인된 예약 내역에 대해서 승인 혹은 거절을 할 수 있다.")
+    public ResponseEntity<String> authorizeReservation(@RequestBody @Valid PermissionUpdate permissionUpdate) {
+      String infos = reservationService.updatePermission(permissionUpdate);
       return ResponseEntity.ok(infos);
     }
 

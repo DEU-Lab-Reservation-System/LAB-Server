@@ -8,6 +8,7 @@ import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Member;
 import lab.reservation_server.domain.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -19,6 +20,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
   @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where m.id = :memberId and r.endTime > :now order by r.startTime asc")
   Optional<List<Reservation>> findReservationByMemberId(@Param("memberId") Long memberId,
                                                         @Param("now") LocalDateTime now);
+
+  @Query("select r from Reservation r where r.member =:member and r.lab =:lab and Date(r.createdDate) = :today order by r.endTime desc")
+  List<Reservation> findReservationByMemberAndLab(@Param("member") Member member,@Param("lab") Lab lab,@Param("today") Date today);
 
   /**
    * 특정 사용자 예약 목록 중에서 ture, false 예약 내역 중에서 제일 최근내역을 가져온다.
@@ -91,4 +95,17 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
      */
     @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where Date(r.createdDate) = :today and r.permission = :permission order by r.startTime asc")
     Optional<List<Reservation>> findReservationsByDateAndPermission(@Param("today") java.sql.Date today, @Param("permission") boolean permission);
+
+    /**
+     * 특정 강의실의 오늘 예약 내역 중에서 미승인된 permission의 상태를 update 해준다.
+     */
+    @Modifying
+    @Query("update Reservation r set r.permission = :permission where r.id in :ids")
+    void updatePermission(@Param("ids") List<Long> reservationIds, @Param("permission") boolean permission);
+
+  /**
+   * 특정 강의실, 오늘 예약, reservationIds에서 가장 오랫동안 사용하는 내역을 조회한다.
+   */
+    @Query("select r from Reservation r join fetch r.member m where r.lab = :lab and r.id in :ids order by r.endTime desc")
+    Optional<List<Reservation>> findMemberWithLongestTime(@Param("lab") Lab lab, @Param("ids") List<Long> reservationIds);
 }

@@ -12,6 +12,7 @@ import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Member;
 import lab.reservation_server.domain.Reservation;
 import lab.reservation_server.dto.request.reservation.BookRequest;
+import lab.reservation_server.dto.request.reservation.PermissionUpdate;
 import lab.reservation_server.dto.request.reservation.RoomAndTime;
 import lab.reservation_server.dto.request.reservation.TimeStartToEnd;
 import lab.reservation_server.dto.response.labmanager.MemberSimpleInfo;
@@ -177,7 +178,7 @@ public class ReservationServiceImpl implements ReservationService {
             // 예약 시작 시간이 16시 30분 이후라면 조교의 승인이 필요하다
             reservation = reservationRepository.save(book.toUnapprovedReservation(member,lab));
 
-            labManagerService.updateLabManager(lab,book);
+            // 방장 업데이트는 최종적으로 조교가 승인할때 가장 오래 있는 사람으로 지정
         }
 
         // 예약 완료 정보 반환
@@ -241,6 +242,32 @@ public class ReservationServiceImpl implements ReservationService {
       }
 
       return reservationInfosWithManager;
+    }
+
+    /**
+     * 조교는 특정 예약에 대해 승인 혹은 거절을 할 수 있다.
+     */
+    @Override
+    @Transactional
+    public String updatePermission(PermissionUpdate permissionUpdate) {
+
+      Lab lab =
+          labService.findLabWithRoomNumber(permissionUpdate.getRoomNum());// 해당 강의실이 존재하는지 확인한다.
+
+      // 승인 혹은 거절할 예약
+      if(permissionUpdate.getState()){
+        // 승인
+        // 특정 강의실 및 permissionUpdate가 가지고 있는 ids 중에서 가장 늦게까지 있는 사람을 방장으로 지정한다.
+        labManagerService.updateLabManager(lab,permissionUpdate.getReservationIds());
+
+        reservationRepository.updatePermission(permissionUpdate.getReservationIds(),true);
+
+      }else{
+        // 거절
+        reservationRepository.updatePermission(permissionUpdate.getReservationIds(),false);
+      }
+
+      return "업데이트 완료";
     }
 
   /**

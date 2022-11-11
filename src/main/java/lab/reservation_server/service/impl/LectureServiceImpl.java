@@ -116,12 +116,17 @@ public class LectureServiceImpl implements LectureService {
      */
     @Override
     public void checkLectureNow(Lab lab, LocalDateTime now) {
+
+      // get day of week now in korean
+      String dayOfWeek = now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+
+      // extract only hour and minute and second
+      LocalTime nowTime1 = LocalTime.of(now.getHour(), now.getMinute(), now.getSecond());
+
       // 현재 시간에 강의가 있는지 확인
-        if (lectureRepository.checkNowByLabId(lab,
-            now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
-            now.toLocalTime(), LocalDate.now()).isPresent()) {
-            throw new LecturePresentException("현재 시간에 강의가 있습니다.");
-        }
+      if (lectureRepository.checkNowByLabId(lab,dayOfWeek,nowTime1,LocalDate.now()).isPresent()) {
+        throw new LecturePresentException("현재 시간에 강의가 있습니다.");
+      }
     }
 
 

@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Optional;
 import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.LabManager;
+import lab.reservation_server.domain.Member;
 import lab.reservation_server.domain.Reservation;
-import lab.reservation_server.dto.request.reservation.BookRequest;
 import lab.reservation_server.dto.response.labmanager.MemberSimpleInfo;
+import lab.reservation_server.exception.BadRequestException;
 import lab.reservation_server.repository.LabManagerRepository;
 import lab.reservation_server.repository.MemberRepository;
 import lab.reservation_server.repository.ReservationRepository;
@@ -43,28 +44,41 @@ public class LabManagerImpl implements LabManagerService {
      * 17 이후의 사용자에 대한 방장 데이터가 없으면 insert, 있으면 update
      */
     @Override
-    public void updateLabManager(Lab lab, BookRequest book) {
+    @Transactional
+    public void updateLabManager(Lab lab, List<Long> reservationIds) {
 
-        // 17시 이후의 예약 내역 중에서 가장 늦게 끝나는 순으로 정렬 후 찾기
-        List<Reservation> reservations = reservationRepository.findReservationWithPermissionByLabId(lab, Date.valueOf(
-                LocalDate.now()), false).orElse(null);
+        Optional<List<Reservation>> reservations =
+            reservationRepository.findMemberWithLongestTime(lab, reservationIds);
 
-        // false 목록 중에서 가장 늦게 끝나는 예약 내역, 곧 방장
-        Reservation reservation = reservations.get(0);
+        // ids가 모두 존재하는지 확인
+        if(reservations.isPresent()){
+            // 승인될 목록 중에서 가장 오랫동안 있는 사람
+            Member member = reservations.get().get(0).getMember();
 
-        // 이미 방장 데이터가 있는지 확인
-        Optional<LabManager> labManagerByLabIdAndDate =
-            labManagerRepository.findLabManagerByLabIdAndDate(lab, LocalDate.now());
+            // 기존의 방장
+            Optional<LabManager> labManager =
+                labManagerRepository.findLabManagerByLabIdAndDate(lab, LocalDate.now());
 
-        if(labManagerByLabIdAndDate.isPresent()){
-            //update, 이미 누군가 방장을 맡고 있다는 이야기 -> 가장 늦게 끝나는 예약을 방장으로 새롭게 업데이트
-            labManagerByLabIdAndDate.get().updateMember(reservation.getMember());
+            // 이미 방장이 있는 경우
+            if(labManager.isPresent()){
+                // 실제 방장이 존재할 시간이랑 예비 방장이랑 누가 더 오래 있는지 판단해야 한다.
+                Reservation reservationOriManager = reservationRepository.findReservationByMemberAndLab(
+                    labManager.get().getMember(),
+                    lab, Date.valueOf(LocalDate.now())).get(0);
+
+                // 예비 방장이 더 오래 있을 경우, 방장 업데이트
+                if(reservationOriManager.getEndTime().isBefore(reservations.get().get(0).getEndTime())){
+                    labManager.get().updateMember(member);
+                }
+            }
+            else{
+                // 기존 방장이 없는 경우, 현재 승인 목록 중 가장 오래 있는 사람이 방장으로 지정
+                labManagerRepository.save(new LabManager(member, lab));
+            }
         }else{
-            //insert, 아직 아무도 방장을 맡지 않는 경우 (즉, 오후반에 대해서 맨 처음으로 예약을 한 사람이 초기에 방장에 된다.)
-            labManagerRepository.save(new LabManager(reservation.getMember(),lab));
+            // ids 목록들이 모두 존재하지 않는 경우
+            throw new BadRequestException("모두 존재하지 않는 reservationIds 입니다.");
         }
-
-
     }
 
 

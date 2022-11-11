@@ -1,7 +1,7 @@
 package lab.reservation_server.service;
 
+import java.util.List;
 import lab.reservation_server.domain.Lab;
-import lab.reservation_server.dto.request.reservation.BookRequest;
 import lab.reservation_server.dto.response.labmanager.MemberSimpleInfo;
 
 public interface LabManagerService {
@@ -12,5 +12,5 @@ public interface LabManagerService {
      */
     MemberSimpleInfo searchMemberByLabId(Long labId);
 
-    void updateLabManager(Lab lab, BookRequest book);
+    void updateLabManager(Lab lab, List<Long> reservationIds);
 }
