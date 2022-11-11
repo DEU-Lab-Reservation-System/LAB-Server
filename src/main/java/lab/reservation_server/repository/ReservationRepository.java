@@ -16,6 +16,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
   /**
    * 오늘 날짜 기준, Member가 가장 최근에 예약한 이상적인 Reservation을 가져온다.
+   * 부등호 check 완료
    */
   @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where m.id = :memberId and r.endTime > :now order by r.startTime asc")
   Optional<List<Reservation>> findReservationByMemberId(@Param("memberId") Long memberId,
@@ -38,14 +39,15 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
    * 해당 강의실에 현재 시간에 이용중인 예약 내역을 반환한다.
    * 사용자 화면 기준으로 사용되는 쿼리, 왜냐하면 사용자 입장에서는 오후반 신청할때 아직 미승인 예약에 대해서도 알아야지 해당 좌석을 피해서
    * 예약을 진행해야 하기 떄문이다.
+   * 부등호 check 완료, 변경 완료
    */
-  @Query("select r from Reservation r where r.lab =:lab and r.endTime > :now and r.startTime < :now")
+  @Query("select r from Reservation r where r.lab =:lab and r.endTime >= :now and r.startTime <= :now")
   Optional<List<Reservation>> findCurrentReservation(@Param("lab") Lab lab,@Param("now") LocalDateTime now);
 
   /**
    * 조교 화면 기준으로 사용되는 쿼리, 조교 입장에서 특정 강의실,
    * 특정 시간대에 조회하는 경우는 permission이 true인 경우의 승인된 예약 내역을 조회한다.
-   * todo : reservation 데이터가 그대로 유지된다는 가정하게 데이터의 무결성이 꺠지지 않는지 확인 필요 (오늘 날짜 기준으로 파라미터가 추가되어야 하지 않을까)
+   * 부등호 check 완료
    */
   @Query("select r from Reservation r where r.lab =:lab and r.startTime >= :startTime and r.endTime <= :endTime and r.permission = :permission order by r.startTime asc")
   Optional<List<Reservation>> findCurrentReservationWithPermission(@Param("lab") Lab lab,
@@ -56,6 +58,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
   /**
    * 특정 강의실, 특정 시간대 범위에 이용중인 reservation을 반환한다. (오늘 기준으로 검색, 스케줄러를 통해 일주일 단위로 삭제 해도
    * 올바른 데이터 반환)
+   * 부등호 check 완료
    */
   @Query("select r from Reservation r where r.lab =:lab and r.endTime > :startTime and r.startTime < :endTime and Date(r.createdDate) = :today")
   Optional<List<Reservation>> findCurrentReservationBetweenTime(@Param("lab") Lab lab,
@@ -67,6 +70,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
   /**
    * 특정 시간대에 이용중인 예약 내역의 개수를 반환한다.
+   * 부등호 check 완료
    */
   @Query("select count(r) from Reservation r where r.lab =:lab and r.endTime > :startTime and r.startTime < :endTime")
   Integer countByLabAndStartTimeBetweenEndTime(@Param("lab") Lab lab, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);

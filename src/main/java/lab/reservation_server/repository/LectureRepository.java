@@ -33,13 +33,15 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
 
   /**
    * 현재 시간에 강의가 있는지 확인 (지난 학기 개설 과목을 DB에서 삭제하지 않아도 올바른 데이터 반환)
+   * 부등호 check 완료
    */
   @Query("select l from Lecture l where l.lab =:lab and l.day = :day and l.endTime >= :now and l.startTime <= :now and l.startDate <= :today and l.endDate >= :today")
   Optional<Lecture> checkNowByLabId(@Param("lab") Lab lab, @Param("day") String day, @Param("now") LocalTime now, @Param("today") LocalDate today);
 
   /**
-   * 특정 강의실, 특정 시간대, 오늘 요일에 강의가 있는지 확인 (지난 학기 개설 과목을 DB에서 삭제하지 않아도 올바른 데이터 반환)
+   * 특정 강의실, 특정 시간대, 오늘 요일에 강의가 있는지 확인 (지난 학기 개설 과목을 DB에서 삭제하지 않아도 올바른 데이터 반환
+   * 부등호 check 완료, 변경 완료
    */
-  @Query("select l from Lecture l where l.lab =:lab and l.day = :day and l.endTime >= :startTime and l.startTime <= :endTime and l.startDate <= :today and l.endDate >= :today")
+  @Query("select l from Lecture l where l.lab =:lab and l.day = :day and l.endTime > :startTime and l.startTime < :endTime and l.startDate <= :today and l.endDate >= :today")
   Optional<Lecture> checkNowByLabIdBetweenTime(@Param("lab") Lab lab,@Param("day") String day,@Param("startTime") LocalTime startTime,@Param("endTime") LocalTime endTime,@Param("today") LocalDate today);
 }
