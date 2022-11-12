@@ -8,6 +8,7 @@ import lab.reservation_server.dto.request.reservation.BookRequest;
 import lab.reservation_server.dto.request.reservation.ExtendRequest;
 import lab.reservation_server.dto.request.reservation.PermissionUpdate;
 import lab.reservation_server.dto.request.reservation.RoomAndTime;
+import lab.reservation_server.dto.response.DefaultMessageResponse;
 import lab.reservation_server.dto.response.reservation.BookInfo;
 import lab.reservation_server.dto.response.reservation.ReservationInfos;
 import lab.reservation_server.dto.response.reservation.ReservationInfosWithManager;
@@ -77,9 +78,9 @@ public class ReservationController {
      */
     @PostMapping("/api/reservations/authorize")
     @ApiOperation(value="예약 승인" , notes = "미승인된 예약 내역에 대해서 승인 혹은 거절을 할 수 있다.")
-    public ResponseEntity<String> authorizeReservation(@RequestBody @Valid PermissionUpdate permissionUpdate) {
+    public ResponseEntity<DefaultMessageResponse> authorizeReservation(@RequestBody @Valid PermissionUpdate permissionUpdate) {
       String infos = reservationService.updatePermission(permissionUpdate);
-      return ResponseEntity.ok(infos);
+      return ResponseEntity.ok(new DefaultMessageResponse(infos));
     }
 
     /**
