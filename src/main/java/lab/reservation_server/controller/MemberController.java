@@ -1,6 +1,7 @@
 package lab.reservation_server.controller;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
 import lab.reservation_server.dto.request.member.MemberLogin;
@@ -13,6 +14,8 @@ import lab.reservation_server.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -74,4 +77,14 @@ public class MemberController {
          return ResponseEntity.ok(member);
      }
 
+    /**
+     * 회원정보 탈퇴
+     */
+    @DeleteMapping("/api/member/{userId}")
+    @ApiImplicitParam(name = "userId" , value = "사용자 아이디(학번)" , required = true)
+    @ApiOperation(value="회원정보 탈퇴" , notes = "회원정보 탈퇴를 할 수 있다.")
+    public ResponseEntity<DefaultMessageResponse> deleteMember(@PathVariable String userId) {
+        String message = memberService.deleteMember(userId);
+        return ResponseEntity.ok(new DefaultMessageResponse(message));
+    }
 }

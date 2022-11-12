@@ -95,7 +95,16 @@ public class MemberServiceImpl implements MemberService {
       return new MemberUpdate(member);
     }
 
-    private void checkValidation(MemberUpdate memberUpdate) {
+    @Override
+    @Transactional
+    public String deleteMember(String userId) {
+        Member member = memberRepository.findByUserId(userId)
+            .orElseThrow(() -> new BadRequestException("존재하지 않는 사용자입니다."));
+        memberRepository.delete(member);
+      return "탈퇴 성공";
+    }
+
+  private void checkValidation(MemberUpdate memberUpdate) {
 
       memberRepository.findByUserId(memberUpdate.getUserId()).ifPresent(member -> {
         if (!member.getId().equals(memberUpdate.getId())) {
