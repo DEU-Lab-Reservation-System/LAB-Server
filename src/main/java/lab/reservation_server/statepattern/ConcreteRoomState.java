@@ -54,7 +54,7 @@ public class ConcreteRoomState implements RoomState {
             } else {
                 // 911에 자리가 많지만 다른 방에 자리를 잡은 경우
                 log.info("현재 강의실 {} 먼저 이용 부탁드립니다.", this.roomNum);
-                throw new BadRequestException(this.roomNum + "강의실 이용 부탁드립니다.");
+                throw new BadRequestException(this.roomNum + " 강의실 이용 부탁드립니다.");
             }
         }else{
             log.info("다음 강의실로 예약 부탁드립니다.");
