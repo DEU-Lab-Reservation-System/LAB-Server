@@ -1,11 +1,16 @@
 package lab.reservation_server.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lab.reservation_server.domain.Member;
+import lab.reservation_server.domain.enums.Role;
 import lab.reservation_server.dto.request.member.MemberLogin;
 import lab.reservation_server.dto.request.member.MemberSignUp;
 import lab.reservation_server.dto.request.member.MemberUpdate;
 import lab.reservation_server.dto.request.member.UserIdCheck;
 import lab.reservation_server.dto.response.member.MemberInfo;
+import lab.reservation_server.dto.response.member.MemberSimpleInfo;
+import lab.reservation_server.dto.response.member.MemberSimpleInfos;
 import lab.reservation_server.dto.response.reservation.ReservationInfo;
 import lab.reservation_server.exception.BadRequestException;
 import lab.reservation_server.exception.DuplicateException;
@@ -102,6 +107,16 @@ public class MemberServiceImpl implements MemberService {
             .orElseThrow(() -> new BadRequestException("존재하지 않는 사용자입니다."));
         memberRepository.delete(member);
       return "탈퇴 성공";
+    }
+
+    @Override
+    public MemberSimpleInfos getMemberList() {
+        List<Member> members = memberRepository.findAllWithRole(Role.USER);
+
+      List<MemberSimpleInfo> infos =
+          members.stream().map(MemberSimpleInfo::new).collect(Collectors.toList());
+
+      return new MemberSimpleInfos(infos);
     }
 
   private void checkValidation(MemberUpdate memberUpdate) {

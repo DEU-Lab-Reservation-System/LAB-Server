@@ -3,6 +3,7 @@ package lab.reservation_server.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
 import javax.validation.Valid;
 import lab.reservation_server.dto.request.member.MemberLogin;
 import lab.reservation_server.dto.request.member.MemberSignUp;
@@ -10,11 +11,13 @@ import lab.reservation_server.dto.request.member.MemberUpdate;
 import lab.reservation_server.dto.request.member.UserIdCheck;
 import lab.reservation_server.dto.response.DefaultMessageResponse;
 import lab.reservation_server.dto.response.member.MemberInfo;
+import lab.reservation_server.dto.response.member.MemberSimpleInfos;
 import lab.reservation_server.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -87,4 +90,17 @@ public class MemberController {
         String message = memberService.deleteMember(userId);
         return ResponseEntity.ok(new DefaultMessageResponse(message));
     }
+
+
+    /**
+     * 조교는 경고를 부여하기 위해 재학생 목록을 조회할 수 있다.
+     */
+    @GetMapping("/api/member")
+    @ApiOperation(value="조교는 재학생 목록을 조회할 수 있다." , notes = "조교는 재학생 목록을 조회할 수 있다.")
+    public ResponseEntity<MemberSimpleInfos> getMemberList() {
+        MemberSimpleInfos memberSimpleInfos = memberService.getMemberList();
+        return ResponseEntity.ok(memberSimpleInfos);
+    }
+
+
 }
