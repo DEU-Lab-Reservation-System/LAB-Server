@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import lab.reservation_server.domain.enums.Role;
+import lab.reservation_server.dto.request.member.MemberUpdate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -118,5 +119,17 @@ public class Member extends BaseTime {
 
     public void updateDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
+    }
+
+    public void updateMemberInfo(MemberUpdate memberUpdate) {
+        this.major = memberUpdate.getMajor();
+        this.email = memberUpdate.getEmail();
+        this.phoneNum = memberUpdate.getPhoneNum();
+        this.name = memberUpdate.getName();
+        this.isAuth = memberUpdate.getIsAuth();
+        this.password = memberUpdate.getPassword();
+        this.role = Role.valueOf(memberUpdate.getRole());
+        this.deviceToken = memberUpdate.getDeviceToken();
+        this.userId = memberUpdate.getUserId();
     }
 }

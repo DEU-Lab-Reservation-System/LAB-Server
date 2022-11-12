@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import javax.validation.Valid;
 import lab.reservation_server.dto.request.member.MemberLogin;
 import lab.reservation_server.dto.request.member.MemberSignUp;
+import lab.reservation_server.dto.request.member.MemberUpdate;
 import lab.reservation_server.dto.request.member.UserIdCheck;
 import lab.reservation_server.dto.response.DefaultMessageResponse;
 import lab.reservation_server.dto.response.member.MemberInfo;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,4 +60,18 @@ public class MemberController {
         }
         return ResponseEntity.badRequest().body(new DefaultMessageResponse("이미 사용중인 아이디 입니다."));
     }
+
+
+    /**
+     * 회원 정보 수정 (학생)
+     */
+     @PutMapping("/api/member")
+     @ApiOperation(value="회원(학생) 정보 수정" , notes = "회원(학생) 정보 수정을 할 수 있다.")
+     public ResponseEntity<MemberUpdate> updateMember(@RequestBody @Valid MemberUpdate memberUpdate) {
+
+         MemberUpdate member = memberService.updateMember(memberUpdate);
+
+         return ResponseEntity.ok(member);
+     }
+
 }
