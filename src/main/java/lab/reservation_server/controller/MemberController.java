@@ -113,5 +113,16 @@ public class MemberController {
         return ResponseEntity.ok(new DefaultMessageResponse(message));
     }
 
+    /**
+     * 경고 초기화
+     */
+    @PutMapping("/api/member/{userId}/warning/reset")
+    @ApiImplicitParam(name = "userId" , value = "사용자 아이디(학번)" , required = true)
+    @ApiOperation(value="경고 초기화" , notes = "경고 초기화를 할 수 있다.")
+    public ResponseEntity<DefaultMessageResponse> resetWarning(@PathVariable String userId) {
+        String message = memberService.resetWarning(userId);
+        return ResponseEntity.ok(new DefaultMessageResponse(message));
+    }
+
 
 }

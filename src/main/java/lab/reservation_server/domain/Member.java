@@ -144,4 +144,8 @@ public class Member extends BaseTime {
     public void warning() {
         this.warningCount++;
     }
+
+    public void resetWarning() {
+        this.warningCount = 0;
+    }
 }

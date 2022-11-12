@@ -131,6 +131,17 @@ public class MemberServiceImpl implements MemberService {
         return "경고 횟수 1회 증가";
     }
 
+    @Override
+    @Transactional
+    public String resetWarning(String userId) {
+        Member member = memberRepository.findByUserId(userId)
+            .orElseThrow(() -> new BadRequestException("존재하지 않는 사용자입니다."));
+
+        member.resetWarning();
+
+        return "경고 횟수 초기화";
+    }
+
   private void checkValidation(MemberUpdate memberUpdate) {
 
       memberRepository.findByUserId(memberUpdate.getUserId()).ifPresent(member -> {

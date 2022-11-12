@@ -22,4 +22,6 @@ public interface MemberService {
     MemberSimpleInfos getMemberList();
 
     String warning(String userId);
+
+    String resetWarning(String userId);
 }
