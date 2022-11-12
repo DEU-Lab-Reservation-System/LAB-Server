@@ -19,5 +19,7 @@ public interface MemberService {
 
     String deleteMember(String userId);
 
-  MemberSimpleInfos getMemberList();
+    MemberSimpleInfos getMemberList();
+
+    String warning(String userId);
 }

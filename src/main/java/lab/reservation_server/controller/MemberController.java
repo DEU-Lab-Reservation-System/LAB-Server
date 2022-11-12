@@ -102,5 +102,16 @@ public class MemberController {
         return ResponseEntity.ok(memberSimpleInfos);
     }
 
+    /**
+     * 경고 부여
+     */
+    @PutMapping("/api/member/{userId}/warning")
+    @ApiImplicitParam(name = "userId" , value = "사용자 아이디(학번)" , required = true)
+    @ApiOperation(value="경고 부여" , notes = "경고 부여를 할 수 있다.")
+    public ResponseEntity<DefaultMessageResponse> warning(@PathVariable String userId) {
+        String message = memberService.warning(userId);
+        return ResponseEntity.ok(new DefaultMessageResponse(message));
+    }
+
 
 }

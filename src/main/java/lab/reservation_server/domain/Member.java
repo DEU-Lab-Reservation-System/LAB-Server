@@ -93,9 +93,17 @@ public class Member extends BaseTime {
     @Column(nullable = false)
     private Boolean isAuth;
 
+    /**
+     * 학생의 경고 누적
+     * 10-01, 회원 가입 시점에는 0으로 초기화
+     */
+    @Column(nullable = false)
+    private Integer warningCount;
+
     @PrePersist
     public void prePersist() {
         this.major = "컴퓨터소프트웨어공학과";
+        this.warningCount = 0;
     }
 
     @Builder
@@ -131,5 +139,9 @@ public class Member extends BaseTime {
         this.role = Role.valueOf(memberUpdate.getRole());
         this.deviceToken = memberUpdate.getDeviceToken();
         this.userId = memberUpdate.getUserId();
+    }
+
+    public void warning() {
+        this.warningCount++;
     }
 }
