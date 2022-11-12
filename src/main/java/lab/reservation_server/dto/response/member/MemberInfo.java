@@ -29,6 +29,8 @@ public class MemberInfo {
 
     private String deviceToken;
 
+    private int warningCount;
+
     private Boolean isAuth;
 
     public MemberInfo(Member saved, ReservationInfo reservationInfo) {
@@ -43,5 +45,6 @@ public class MemberInfo {
       this.role = saved.getRole().getAuthority();
       this.deviceToken = saved.getDeviceToken();
       this.isAuth = saved.getIsAuth();
+      this.warningCount = saved.getWarningCount();
     }
 }

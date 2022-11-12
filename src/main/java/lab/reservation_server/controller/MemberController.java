@@ -3,7 +3,6 @@ package lab.reservation_server.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import java.util.List;
 import javax.validation.Valid;
 import lab.reservation_server.dto.request.member.MemberLogin;
 import lab.reservation_server.dto.request.member.MemberSignUp;
