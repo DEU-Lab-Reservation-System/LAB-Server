@@ -1,5 +1,6 @@
 package lab.reservation_server.service;
 
+import java.io.IOException;
 import java.util.List;
 import lab.reservation_server.domain.Lab;
 import lab.reservation_server.dto.response.labmanager.MemberSimpleInfo;
@@ -12,5 +13,5 @@ public interface LabManagerService {
      */
     MemberSimpleInfo searchMemberByLabId(Long labId);
 
-    void updateLabManager(Lab lab, List<Long> reservationIds);
+    void updateLabManager(Lab lab, List<Long> reservationIds) throws IOException;
 }

@@ -1,5 +1,6 @@
 package lab.reservation_server.service;
 
+import java.io.IOException;
 import lab.reservation_server.dto.request.reservation.BookRequest;
 import lab.reservation_server.dto.request.reservation.ExtendRequest;
 import lab.reservation_server.dto.request.reservation.PermissionUpdate;
@@ -27,7 +28,7 @@ public interface ReservationService {
 
   ReservationInfosWithManager getReservationFromRoomNumber(RoomAndTime roomAndTime);
 
-  String updatePermission(PermissionUpdate permissionUpdate);
+  String updatePermission(PermissionUpdate permissionUpdate) throws IOException;
 
-  BookInfo extendReservation(ExtendRequest extendRequest);
+  BookInfo extendReservation(ExtendRequest extendRequest) throws IOException;
 }

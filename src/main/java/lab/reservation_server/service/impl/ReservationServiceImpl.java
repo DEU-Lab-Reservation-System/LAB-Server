@@ -1,6 +1,7 @@
 package lab.reservation_server.service.impl;
 
 
+import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -251,7 +252,7 @@ public class ReservationServiceImpl implements ReservationService {
      */
     @Override
     @Transactional
-    public String updatePermission(PermissionUpdate permissionUpdate) {
+    public String updatePermission(PermissionUpdate permissionUpdate) throws IOException {
 
       Lab lab =
           labService.findLabWithRoomNumber(permissionUpdate.getRoomNum());// 해당 강의실이 존재하는지 확인한다.
@@ -277,7 +278,7 @@ public class ReservationServiceImpl implements ReservationService {
      */
     @Override
     @Transactional
-    public BookInfo extendReservation(ExtendRequest extendRequest) {
+    public BookInfo extendReservation(ExtendRequest extendRequest) throws IOException {
 
       // reservation id를 통해서 reservation을 우선 조회한다.
       Reservation reservation = reservationRepository.findById(extendRequest.getReservationId())
