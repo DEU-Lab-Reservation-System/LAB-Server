@@ -2,6 +2,7 @@ package lab.reservation_server.repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Lecture;
@@ -43,5 +44,5 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
    * 부등호 check 완료, 변경 완료
    */
   @Query("select l from Lecture l where l.lab =:lab and l.day = :day and l.endTime > :startTime and l.startTime < :endTime and l.startDate <= :today and l.endDate >= :today")
-  Optional<Lecture> checkNowByLabIdBetweenTime(@Param("lab") Lab lab,@Param("day") String day,@Param("startTime") LocalTime startTime,@Param("endTime") LocalTime endTime,@Param("today") LocalDate today);
+  Optional<List<Lecture>> checkNowByLabIdBetweenTime(@Param("lab") Lab lab, @Param("day") String day, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime, @Param("today") LocalDate today);
 }
