@@ -96,7 +96,7 @@ public class GlobalExceptionHandler {
         //DefaultResponse response = DefaultResponse.of(HttpStatus.NO_CONTENT, ex.getMessage());
         CurrentReservation currentReservation = new CurrentReservation(true);
 
-        return ResponseEntity.badRequest().body(currentReservation);
+        return ResponseEntity.ok().body(currentReservation);
     }
 
     /**
