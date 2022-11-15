@@ -93,10 +93,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(LecturePresentException.class)
     public ResponseEntity<CurrentReservation> handle(LecturePresentException ex) {
 
-        //DefaultResponse response = DefaultResponse.of(HttpStatus.NO_CONTENT, ex.getMessage());
-        CurrentReservation currentReservation = new CurrentReservation(true);
+        //DefaultMessageResponse response = DefaultMessageResponse.of(ex.getMessage());
+         CurrentReservation currentReservation = new CurrentReservation(true);
 
-        return ResponseEntity.badRequest().body(currentReservation);
+        return ResponseEntity.ok(currentReservation);
     }
 
     /**
