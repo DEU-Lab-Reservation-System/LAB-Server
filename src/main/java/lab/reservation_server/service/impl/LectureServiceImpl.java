@@ -140,7 +140,7 @@ public class LectureServiceImpl implements LectureService {
             LocalDateTime.now().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)
             , startTime
             , endTime
-            , LocalDate.now()).isPresent()) {
+            , LocalDate.now()).get().size() > 0) {
           throw new LecturePresentException("해당 시간에 강의가 있습니다.");
         }
 
