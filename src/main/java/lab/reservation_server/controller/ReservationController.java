@@ -67,7 +67,7 @@ public class ReservationController {
     /**
      * 특정 강의실, 특정 시간에 승인된 예약 현황을 확인할 수 있다.
      */
-    @GetMapping("/api/reservations/list")
+    @PostMapping("/api/reservations/list")
     @ApiOperation(value="특정 강의실 승인된 예약 현황(사용자) 조회" , notes = "특정 강의실, 특정 시간에 승인된 예약 현황(사용자)을 확인할 수 있다.")
     public ResponseEntity<ReservationInfosWithManager> getReservationFromRoomNumber(@RequestBody @Valid RoomAndTime roomAndTime) {
       ReservationInfosWithManager infos = reservationService.getReservationFromRoomNumber(roomAndTime);
