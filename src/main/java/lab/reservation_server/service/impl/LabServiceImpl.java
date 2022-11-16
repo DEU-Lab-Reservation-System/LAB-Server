@@ -1,5 +1,6 @@
 package lab.reservation_server.service.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import lab.reservation_server.dto.response.lab.LectureInfoForLab;
 import lab.reservation_server.dto.response.lecture.LectureInfo;
 import lab.reservation_server.exception.BadRequestException;
 import lab.reservation_server.repository.LabRepository;
+import lab.reservation_server.repository.LectureRepository;
 import lab.reservation_server.service.LabService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class LabServiceImpl implements LabService {
 
     private final LabRepository labRepository;
+
+    private final LectureRepository lectureRepository;
 
     /**
      * 강의실 번호별로, 강의 목록을 반환
@@ -58,25 +62,23 @@ public class LabServiceImpl implements LabService {
      */
     @Override
     public List<LectureInfo> getAllLabTimeTable() {
-        List<Lab> labs = labRepository.findAll();
+        //List<Lab> labs = labRepository.findAll();
         List<LectureInfo> lectureInfos = new ArrayList<>();
 
         // OneToMany에 의해 N+1문제가 발생할것 같지만, Batch Size로 인해 where in으로 들어가서 한방 쿼리로 조회 가능했다.
-        for (Lab lab : labs) {
-            lab.getLectures().stream()
-                .map(lecture -> new LectureInfo(
-                    lecture.getId(),
-                    lecture.getTitle(),
-                    lecture.getProfessor(),
-                    lecture.getCode(),
-                    lab.getRoomNumber(),
-                    lecture.getDay(),
-                    lecture.getStartTime().toString(),
-                    lecture.getEndTime().toString(),
-                    lecture.getStartDate().toString(),
-                    lecture.getEndDate().toString()
-                )).forEach(lectureInfos::add);
-        }
+        lectureRepository.findAllWithDate(LocalDate.now()).get().stream()
+            .map(lecture -> new LectureInfo(
+                lecture.getId(),
+                lecture.getTitle(),
+                lecture.getProfessor(),
+                lecture.getCode(),
+                lecture.getLab().getRoomNumber(),
+                lecture.getDay(),
+                lecture.getStartTime().toString(),
+                lecture.getEndTime().toString(),
+                lecture.getStartDate().toString(),
+                lecture.getEndDate().toString()
+            )).forEach(lectureInfos::add);
 
         return lectureInfos;
     }

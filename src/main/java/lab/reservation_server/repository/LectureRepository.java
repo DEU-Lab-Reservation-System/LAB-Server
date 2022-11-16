@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Lecture;
+import lab.reservation_server.service.LectureService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -45,4 +46,7 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
    */
   @Query("select l from Lecture l where l.lab =:lab and l.day = :day and l.endTime > :startTime and l.startTime < :endTime and l.startDate <= :today and l.endDate >= :today")
   Optional<List<Lecture>> checkNowByLabIdBetweenTime(@Param("lab") Lab lab, @Param("day") String day, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime, @Param("today") LocalDate today);
+
+  @Query("select l from Lecture l join fetch l.lab lab where l.startDate <= :today and l.endDate >= :today")
+  Optional<List<Lecture>> findAllWithDate(@Param("today") LocalDate today);
 }
