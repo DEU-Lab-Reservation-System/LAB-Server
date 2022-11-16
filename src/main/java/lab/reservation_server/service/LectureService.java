@@ -20,4 +20,6 @@ public interface LectureService {
   void checkLectureNow(Lab lab, LocalDateTime now);
 
   void checkLectureBetweenTime(Lab lab, LocalTime startTime, LocalTime endTime);
+
+  LectureInfo addSeminar(LectureSaveDto seminarSaveDto);
 }

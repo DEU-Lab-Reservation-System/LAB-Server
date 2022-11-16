@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import lab.reservation_server.domain.Lab;
 import lab.reservation_server.domain.Lecture;
-import lab.reservation_server.service.LectureService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,10 +15,11 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
 
 
   /**
-   * 강의실 번호, 요일, 시작 시간, 종료시간을 통해서 해당 강의실에 똑같은 시간대로 강의가 존재하는지 확인
+   * 강의실 번호, 요일, 시작 시간, 종료시간, 오늘 날짜 기준으로 유효한... 통해서 해당 강의실에 똑같은 시간대로 강의가 존재하는지 확인
    */
-  @Query("select l from Lecture l join fetch l.lab lb where lb.roomNumber = :roomNum and l.day = :day and l.endTime > :startTime and l.startTime < :endTime")
-  Optional<Lecture> checkDuplicate(@Param("roomNum") String roomNumber,@Param("day") String day,@Param("startTime") LocalTime startTime,@Param("endTime") LocalTime endTime);
+  @Query("select l from Lecture l join fetch l.lab lb where lb.roomNumber = :roomNum and l.day = :day and l.endTime > :startTime and l.startTime < :endTime and l.startDate <= :endDate and l.endDate >= :startDate")
+  Optional<List<Lecture>> checkDuplicate(@Param("roomNum") String roomNumber, @Param("day") String day, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime,
+                                         @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
   Optional<Lecture> findByCode(String code);
 
@@ -49,4 +49,7 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
 
   @Query("select l from Lecture l join fetch l.lab lab where l.startDate <= :today and l.endDate >= :today")
   Optional<List<Lecture>> findAllWithDate(@Param("today") LocalDate today);
+
+  @Query("select l from Lecture l where l.code = :code and l.endDate >= :today")
+  Optional<Lecture> findByCodeWithDate(@Param("code") String code, @Param("today") LocalDate today);
 }

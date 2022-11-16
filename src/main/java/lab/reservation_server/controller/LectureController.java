@@ -86,6 +86,17 @@ public class LectureController {
     }
 
 
+    /***
+     * 교수가 세미나 등록
+     */
+    @PostMapping("/api/lectures/seminar")
+    @ApiOperation(value="교수가 세미나 등록" , notes = "교수가 세미나를 등록할 수 있다.")
+    public ResponseEntity<LectureInfo> addSeminar(@RequestBody @Valid LectureSaveDto seminarSaveDto) {
+        LectureInfo seminar = lectureService.addSeminar(seminarSaveDto);
+        return ResponseEntity.ok(seminar);
+    }
+
+
 
 
 

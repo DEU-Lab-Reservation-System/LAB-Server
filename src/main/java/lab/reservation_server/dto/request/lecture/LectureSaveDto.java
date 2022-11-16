@@ -26,7 +26,7 @@ public class LectureSaveDto {
     private String professor;
 
     @NotBlank(message = "강의 코드는 필수 입니다.")
-    @ApiModelProperty(value = "앱에서 생성된 수업 코드")
+    @ApiModelProperty(value = "앱에서 생성된 수업 코드, 세미나의 경우 교수의 교번")
     private String code;
 
 

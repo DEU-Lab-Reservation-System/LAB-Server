@@ -45,7 +45,7 @@ public class LectureServiceImpl implements LectureService {
         Lab lab = checkIfLabPresent(lectureSaveDto.getRoomNumber());
 
         checkDuplicateSchedule(lab.getRoomNumber(), lectureSaveDto.getDay(),
-            lectureSaveDto.getStartTime(), lectureSaveDto.getEndTime());
+            lectureSaveDto.getStartTime(), lectureSaveDto.getEndTime(), lectureSaveDto.getStartDate(),lectureSaveDto.getEndDate());
 
         Lecture lecture = lectureSaveDto.toEntity(lectureSaveDto, lab);
         lectureRepository.save(lecture);
@@ -76,7 +76,7 @@ public class LectureServiceImpl implements LectureService {
 
           // check lecture between start time and end time on same day and same lab
           checkDuplicateSchedule(lab.getRoomNumber(), lectureEditDto.getDay(),
-              lectureEditDto.getStartTime(), lectureEditDto.getEndTime());
+              lectureEditDto.getStartTime(), lectureEditDto.getEndTime(), lectureEditDto.getStartDate(),lectureEditDto.getEndDate());
 
           Lecture lecture = lectureEditDto.toEntity(lectureEditDto, lab, code);
           lectureRepository.save(lecture);
@@ -146,6 +146,28 @@ public class LectureServiceImpl implements LectureService {
 
     }
 
+    /**
+     * 교수가 세미나를 등록할 수 있다.
+     */
+    @Override
+    @Transactional
+    public LectureInfo addSeminar(LectureSaveDto seminarSaveDto) {
+
+        lectureRepository.findByCodeWithDate(seminarSaveDto.getCode(), LocalDate.now()).ifPresent(lecture -> {
+          throw new BadRequestException("이미 교수님의 세미나가 존재합니다.");
+        });
+
+        checkDuplicateSchedule(seminarSaveDto.getRoomNumber(), seminarSaveDto.getDay(),
+          seminarSaveDto.getStartTime(), seminarSaveDto.getEndTime(), seminarSaveDto.getStartDate(),seminarSaveDto.getEndDate());
+
+        Lecture lecture = seminarSaveDto.toEntity(seminarSaveDto,
+          checkIfLabPresent(seminarSaveDto.getRoomNumber()));
+
+        lectureRepository.save(lecture);
+
+        return new LectureInfo(lecture, lecture.getLab().getRoomNumber());
+    }
+
 
   /**
      * roomNumber로 lab을 찾아서 반환
@@ -159,12 +181,11 @@ public class LectureServiceImpl implements LectureService {
     /**
      * 추가 혹은 수정하고자 하는 강의 시간표에서 겹치지 않는지 확인
      */
-    private void checkDuplicateSchedule(String roomNumber, String day, LocalTime startTime, LocalTime endTime) {
+    private void checkDuplicateSchedule(String roomNumber, String day, LocalTime startTime, LocalTime endTime, LocalDate startDate, LocalDate endDate) {
       // check lecture between start time and end time on same day and same lab
-      lectureRepository.checkDuplicate(roomNumber, day, startTime, endTime)
-          .ifPresent(lecture -> {
-            throw new BadRequestException("해당 강의실에 해당 시간에 강의가 존재합니다.");
-          });
+      if (lectureRepository.checkDuplicate(roomNumber, day, startTime, endTime,startDate,endDate).get().size() > 0) {
+        throw new BadRequestException("강의 시간표가 겹칩니다.");
+      }
     }
 
 
