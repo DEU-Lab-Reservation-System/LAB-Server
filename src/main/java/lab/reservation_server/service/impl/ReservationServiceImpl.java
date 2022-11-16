@@ -351,6 +351,18 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationInfos;
     }
 
+    /**
+     * 예약 고유 id를 통해사 예약 내역을 삭제한다.
+     */
+    @Override
+    @Transactional
+    public String deleteReservation(Long reservationId) {
+
+        reservationRepository.deleteById(reservationId);
+
+        return "예약이 취소(반납)되었습니다.";
+    }
+
   /**
      * 팀 인원이 열려 있는 강의실 남은 자리 수 보다 많을 때 예약불가 메세지 알려주기
      */

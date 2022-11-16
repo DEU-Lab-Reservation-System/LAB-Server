@@ -33,4 +33,6 @@ public interface ReservationService {
   BookInfo extendReservation(ExtendRequest extendRequest) throws IOException;
 
   ReservationInfos getLastAllReservationFromMemberId(String userId);
+
+  String deleteReservation(Long reservationId);
 }

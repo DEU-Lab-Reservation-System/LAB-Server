@@ -17,6 +17,7 @@ import lab.reservation_server.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -106,6 +107,17 @@ public class ReservationController {
     public ResponseEntity<ReservationInfos> getAllReservationFromMemberId(@PathVariable String userId) {
       ReservationInfos infos = reservationService.getLastAllReservationFromMemberId(userId);
       return ResponseEntity.ok(infos);
+    }
+
+    /**
+     * 실습실 예약 반납 혹은 취소, 즉 해당 예약 내역을 DB로부터 삭제한다.
+     */
+    @DeleteMapping("/api/reservations/{reservationId}")
+    @ApiImplicitParam(name = "reservationId" , value = "예약 고유 숫자(아이디)" , required = true)
+    @ApiOperation(value="예약 취소" , notes = "자신의 예약을 취소할 수 있다.")
+    public ResponseEntity<DefaultMessageResponse> deleteReservation(@PathVariable Long reservationId) {
+      String info = reservationService.deleteReservation(reservationId);
+      return ResponseEntity.ok(new DefaultMessageResponse(info));
     }
 
 
