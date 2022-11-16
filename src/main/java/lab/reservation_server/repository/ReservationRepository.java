@@ -95,6 +95,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     Optional<List<Reservation>> findAllByMember(@Param("member") Member member , @Param("today") java.sql.Date today);
 
     /**
+    * 사용자가 해당 서비스를 이용하면서 예약했던 모든 내역을 조회한다.
+   */
+    @Query("select r from Reservation r join fetch r.lab l where r.member = :member order by r.startTime asc")
+    Optional<List<Reservation>> findAllLastReservationByMember(@Param("member") Member member);
+
+    /**
      * 오늘 예약한 목록 중에서 permission이 true 혹은 false에 따른 예약 내역 전체를 반환한다.
      */
     @Query("select r from Reservation r join fetch r.member m join fetch r.lab l where Date(r.createdDate) = :today and r.permission = :permission order by r.startTime asc")

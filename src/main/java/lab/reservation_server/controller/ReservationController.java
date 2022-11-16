@@ -97,4 +97,16 @@ public class ReservationController {
     }
 
 
+    /**
+     * 자신이 해당 서비스를 이용하면서 사용했던 모든 예약 내역을 조회한다.
+     */
+    @GetMapping("/api/reservations/{userId}/all")
+    @ApiImplicitParam(name = "userId" , value = "사용자 아이디" , required = true)
+    @ApiOperation(value="내 예약 내역 조회" , notes = "내 예약 내역을 모두 조회할 수 있다. 기간이 지난 내역도 모두 조회")
+    public ResponseEntity<ReservationInfos> getAllReservationFromMemberId(@PathVariable String userId) {
+      ReservationInfos infos = reservationService.getLastAllReservationFromMemberId(userId);
+      return ResponseEntity.ok(infos);
+    }
+
+
 }

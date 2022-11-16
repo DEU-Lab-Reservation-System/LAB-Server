@@ -31,4 +31,6 @@ public interface ReservationService {
   String updatePermission(PermissionUpdate permissionUpdate) throws IOException;
 
   BookInfo extendReservation(ExtendRequest extendRequest) throws IOException;
+
+  ReservationInfos getLastAllReservationFromMemberId(String userId);
 }
