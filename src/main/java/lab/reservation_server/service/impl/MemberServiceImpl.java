@@ -113,10 +113,10 @@ public class MemberServiceImpl implements MemberService {
     public MemberSimpleInfos getMemberList() {
         List<Member> members = memberRepository.findAllWithRole(Role.USER);
 
-      List<MemberSimpleInfo> infos =
-          members.stream().map(MemberSimpleInfo::new).collect(Collectors.toList());
+        List<MemberUpdate> memberUpdates =
+          members.stream().map(MemberUpdate::new).collect(Collectors.toList());
 
-      return new MemberSimpleInfos(infos);
+      return new MemberSimpleInfos(memberUpdates);
     }
 
     @Override

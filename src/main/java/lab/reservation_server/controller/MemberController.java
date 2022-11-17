@@ -97,8 +97,8 @@ public class MemberController {
     @GetMapping("/api/member")
     @ApiOperation(value="조교는 재학생 목록을 조회할 수 있다." , notes = "조교는 재학생 목록을 조회할 수 있다.")
     public ResponseEntity<MemberSimpleInfos> getMemberList() {
-        MemberSimpleInfos memberSimpleInfos = memberService.getMemberList();
-        return ResponseEntity.ok(memberSimpleInfos);
+        MemberSimpleInfos members = memberService.getMemberList();
+        return ResponseEntity.ok(members);
     }
 
     /**
