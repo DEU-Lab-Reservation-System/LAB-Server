@@ -148,4 +148,8 @@ public class Member extends BaseTime {
     public void resetWarning() {
         this.warningCount = 0;
     }
+
+    public void updateIsAuthFalse() {
+        this.isAuth = false;
+    }
 }

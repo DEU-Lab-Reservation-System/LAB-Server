@@ -142,6 +142,16 @@ public class MemberServiceImpl implements MemberService {
         return "경고 횟수 초기화";
     }
 
+    /**
+     * member의 인증여부 필드를 false로 모두 초기화
+     */
+    @Override
+    @Transactional
+    public void updateMemberIsAuthFalse() {
+
+        memberRepository.updateMemberIsAuthFalse();
+    }
+
   private void checkValidation(MemberUpdate memberUpdate) {
 
       memberRepository.findByUserId(memberUpdate.getUserId()).ifPresent(member -> {

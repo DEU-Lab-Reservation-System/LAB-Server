@@ -24,4 +24,6 @@ public interface MemberService {
     String warning(String userId);
 
     String resetWarning(String userId);
+
+    void updateMemberIsAuthFalse();
 }
