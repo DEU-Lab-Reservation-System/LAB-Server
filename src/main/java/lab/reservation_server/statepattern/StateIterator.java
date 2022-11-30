@@ -32,10 +32,10 @@ public class StateIterator {
      */
     @PostConstruct
     public void initRoomStates() {
-         roomStates.add(new ConcreteRoomState(reservationRepository,labRepository,"911",5));
          roomStates.add(new ConcreteRoomState(reservationRepository,labRepository,"915",5));
          roomStates.add(new ConcreteRoomState(reservationRepository,labRepository,"916",5));
          roomStates.add(new ConcreteRoomState(reservationRepository,labRepository,"918",5));
+         roomStates.add(new ConcreteRoomState(reservationRepository,labRepository,"911",5));
     }
 
     /**

@@ -118,4 +118,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
    */
     @Query("select r from Reservation r join fetch r.member m where r.lab = :lab and r.id in :ids order by r.endTime desc")
     Optional<List<Reservation>> findMemberWithLongestTime(@Param("lab") Lab lab, @Param("ids") List<Long> reservationIds);
+
+    @Modifying
+    @Query("delete from Reservation r where r.id in :ids")
+    void deleteByIds(@Param("ids") List<Long> reservationIds);
 }

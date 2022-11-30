@@ -267,7 +267,7 @@ public class ReservationServiceImpl implements ReservationService {
 
       }else{
         // 거절
-        reservationRepository.updatePermission(permissionUpdate.getReservationIds(),false);
+        reservationRepository.deleteByIds(permissionUpdate.getReservationIds());
       }
 
       return "승인 상태 업데이트 완료";
