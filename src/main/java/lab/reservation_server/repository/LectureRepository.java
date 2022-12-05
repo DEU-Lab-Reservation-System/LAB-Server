@@ -21,8 +21,6 @@ public interface LectureRepository extends JpaRepository<Lecture, Long> {
   Optional<List<Lecture>> checkDuplicate(@Param("roomNum") String roomNumber, @Param("day") String day, @Param("startTime") LocalTime startTime, @Param("endTime") LocalTime endTime,
                                          @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-  Optional<Lecture> findByCode(String code);
-
   /**
    * 과목 코드를 통해서 강의 삭제
    */

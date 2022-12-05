@@ -23,9 +23,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
   Optional<Member> findByPhoneNum(String phoneNum);
 
-  @Modifying
-  @Query("delete from Member m where m.userId = :userId")
-  void deleteByUserId(@Param("userId") String userId);
 
   @Query("select m from Member m where m.role = :role")
   List<Member> findAllWithRole(@Param("role") Role user);
